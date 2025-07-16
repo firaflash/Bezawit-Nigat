@@ -1,0 +1,538 @@
+@import url('https://fonts.googleapis.com/css?family=Lato:400,300,700');
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body, html {
+  height: 100%;
+  font-family: 'Lato', sans-serif;
+  background-image: linear-gradient(-45deg,
+      #0f172a,
+      #1e293b,
+      #1e293b,
+      #334155,
+      #1e293b,
+      #0f172a
+  );
+  color: #333;
+  background-size: 400% 400%;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  animation: gradientBG 15s ease infinite;
+}
+
+@keyframes gradientBG {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+h2, h3 {
+  margin: 10px 0;
+  text-align: center;
+  font-size: 1.3rem;
+}
+
+ul {
+  list-style: none;
+}
+
+/* Main Container */
+main{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+
+/* Checkout Window */
+.window {
+  display: flex;
+  width: 100%;
+  max-width: 800px; /* Increased max-width for better spacing */
+  background: transparent;
+  box-shadow: 0 15px 50px rgba(0, 0, 0, 0.2);
+  border-radius: 20px;
+  overflow: hidden; /* Important for keeping child corners rounded */
+}
+
+
+.order-info {
+  flex: 1;
+  padding: 20px;
+  max-height: 600px;
+  background: rgba(255, 255, 255, 0.1); /* Frosted glass effect */
+  backdrop-filter: blur(10px);
+  border-radius: 16px 0 0 16px; /* Top-left & Bottom-left rounded only */
+  overflow-y: auto;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+  border-right: 1px solid rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+}
+
+
+/* Credit Info Panel */
+.credit-info {
+  flex: 1;
+  background-color: rgba(30, 41, 59, 0.9);
+  color: #eee;
+  padding: 30px;
+  overflow-y: auto;
+  max-height: 600px;
+  border-radius: 0, 16px, 0, 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.name-group{
+  display: flex !important;
+  flex-direction: row !important;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.name-group {
+  display: flex;
+  gap: 15px;
+}
+
+.name-fields {
+  flex: 1;
+}
+
+.input-field {
+  width: 100%;
+  padding: 10px;
+  font-size: 1rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid transparent;
+  border-radius: 6px;
+  color: #fff;
+}
+
+.input-field:focus {
+  outline: none;
+  background-color: rgba(255, 255, 255, 0.15);
+  border-color: #88ccff;
+}
+
+/* Cart Items */
+.cart-items {
+  padding-left: 0; /* Removed unnecessary padding */
+  height: auto;
+  overflow-y: auto;
+  height: 350px;
+  width: 100%;
+  
+}
+.cart-items li{
+  display: flex;
+  padding-right: 7px;
+  height: 90px;
+  padding-top: 3px;
+}
+
+.cart-item {
+  display: flex;
+  gap: 22px;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+}
+
+.cart-item-img {
+  width: 65px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 6px;
+}
+
+.cart-item-info {
+  flex-grow: 1;
+  margin-left: 10px;
+}
+
+.cart-item-title {
+  font-weight: bolder;
+  margin-bottom: 3px;
+}
+
+.cart-item-price {
+  color: #f2f2f2;
+}
+
+.cart-item-remove {
+  background: none;
+  border: none;
+  color: red;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+/* Total Summary */
+.total-card {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 16px;
+  padding: 8px;
+  margin-top: 25px;
+  text-align: center;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  transition: transform 0.3s ease;
+}
+
+.total-card:hover {
+  transform: translateY(-3px);
+}
+
+.total-card h3 {
+  font-size: 1.2rem;
+  color: #ffffff;
+  margin-bottom: 10px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.total-card p {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #ffffff;
+  margin: 0;
+  letter-spacing: 1px;
+}
+
+/* Payment Options */
+.payment-options {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 20px;
+  text-align: center;
+  color:#e0e0e0;
+}
+
+.payment-option {
+  flex: 1;
+}
+
+.payment-option input[type="radio"] {
+  display: none;
+}
+
+.payment-option label {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s;
+  background-color: rgba(255, 255, 255, 0.8);
+  color: #333; /* Text color for payment option labels */
+}
+
+.payment-option input[type="radio"]:checked + label {
+  border-color: #22b877;
+  background-color: #e8f5e9;
+}
+
+.payment-option img.p-radio { /* More specific selector */
+  margin-bottom: 8px;
+  max-width: 40px;
+}
+
+.copy-account-container {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.copy-btn {
+  background-color: rgba(30, 41, 59, 0.8);
+  color: #ffffff;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.copy-btn:hover {
+  background-color: rgba(30, 41, 59, 1);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+.copy-btn:active {
+  transform: scale(0.98);
+}
+
+.copy-status {
+  position: absolute;
+  bottom: -40px;
+  left: 80%;
+  transform: translateX(-50);
+  background: rgba(30, 41, 59, 0.95);
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  white-space: nowrap;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s ease;
+  z-index: 10;
+  white-space: nowrap;
+}
+
+.copy-status.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(-10px);
+}
+
+/* Payment-details */
+.payment-details a {
+  color: #ffffff;
+  text-decoration: underline;
+}
+
+.payment-details #contact-info {
+ font-size: 1.5rem;
+}
+
+/* Copy_Email-btn */
+.copy-email-container {
+  position: relative;
+  margin-top: 20px;
+  display: inline-block;
+}
+
+.copy-email-btn {
+  background-color: rgba(30, 41, 59, 0.8);
+  color: #ffffff;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.copy-email-btn:hover {
+  background-color: rgba(30, 41, 59, 1);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+.copy-email-btn:active {
+  transform: scale(0.98);
+}
+
+/* COPIED NOTIFICATION */
+.copied-notification {
+  position: absolute;
+  bottom: -50px; /* Positioned below the button */
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(30, 41, 59, 0.95);
+  color: #81cfff;
+  padding: 8px 16px;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  white-space: nowrap;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  z-index: 10;
+}
+
+.copied-notification.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(-10px);
+}
+
+
+/* Payment Details Section */
+.payment-details {
+  margin-top: 1rem;
+  padding: 1rem;
+ background-color: rgba(255, 255, 255, 0.1); /* Slightly see-through white */
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;  border-radius: 8px;
+}
+
+.payment-details p {
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+  color: #ffffff;
+}
+
+.payment-details .form-group {
+  margin-bottom: 1rem;
+}
+
+.warning-box {
+  margin-top: 1rem;
+  padding: 1rem;
+  background-color: #fff3cd;
+  border: 1px solid #ffeeba;
+  color: #856404;
+  border-radius: 8px;
+}
+
+/* Pay Button */
+.pay-btn {
+  background-color: #22b877;
+  color: white;
+  font-size: 1.1rem;
+  padding: 15px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 15px;
+  transition: background 0.3s;
+}
+
+.pay-btn:hover {
+  background-color: #1ca067;
+}
+
+.spinner {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border: 3px solid rgba(255,255,255,.3);
+  border-radius: 50%;
+  border-top-color: #fff;
+  animation: spin 1s ease-in-out infinite;
+  margin-left: 10px;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.hidden {
+  display: none;
+}
+
+/* Line Separator */
+.line {
+  height: 1px;
+  background: #ddd;
+  margin: 15px 0;
+}
+
+/* Responsive Layout */
+@media (max-width: 768px) {
+  main{
+    padding: 0;
+    align-items: flex-start; /* Align window to the top */
+
+  }
+
+  .window {
+    flex-direction: column;
+    border-radius: 0;
+    max-width: 100%;
+    min-height: 1700px;
+  }
+
+  .order-info, .credit-info {
+    width: 100%;
+    border-radius: 0;
+  }
+
+  .credit-info {
+    border-top-right-radius: 0; /* Reset border radius */
+    border-bottom-left-radius: 20px; /* Optional: for a nice touch */
+    border-bottom-right-radius: 20px; /* Optional: for a nice touch */
+    max-height: 100%;
+  }
+
+  .payment-options {
+    flex-direction: row; /* Keep them in a row for better space usage */
+    flex-wrap: wrap; /* Allow wrapping to the next line if needed */
+  }
+
+  .payment-option {
+    min-width: calc(100% - 8px); /* Adjust width for two items per row */
+  }
+}
+
+/* Custom Scrollbar Styles */
+.cart-items::-webkit-scrollbar,
+.credit-info::-webkit-scrollbar,
+.order-info::-webkit-scrollbar { /* Added .order-info here */
+  width: 4px;
+  height: 8px;
+}
+
+/* Track (background) */
+.cart-items::-webkit-scrollbar-track,
+.credit-info::-webkit-scrollbar-track,
+.order-info::-webkit-scrollbar-track { /* Also add track styling for .order-info */
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 10px;
+}
+
+/* Thumb (scroll handle) */
+.cart-items::-webkit-scrollbar-thumb,
+.order-info::-webkit-scrollbar-thumb,
+.credit-info::-webkit-scrollbar-thumb { /* Add thumb for .order-info */
+  background: rgb(231 231 231 / 80%); /* Same as .credit-info thumb */
+  border-radius: 10px;
+}
+
+.credit-info::-webkit-scrollbar-thumb:hover,
+.cart-items::-webkit-scrollbar-thumb:hover,
+.order-info::-webkit-scrollbar-thumb:hover { 
+  cursor: grab;
+}
+
+.credit-info::-webkit-scrollbar-thumb:active,
+.cart-items::-webkit-scrollbar-thumb:active,
+.order-info::-webkit-scrollbar-thumb:active { 
+  cursor: grabbing;
+}

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Checkout</title>
+  <link rel="stylesheet" href="checkout.css"> <!-- Your CSS file -->
+  <!-- <link rel="stylesheet" href="styles.css"> Your CSS file -->
+  <meta name="description" content="Secure and easy checkout page for your order. Choose your payment method and complete your purchase.">
+  <!-- <link href="https://fonts.googleapis.com/css?family=Lato:400,300,700" rel="stylesheet"> -->
+ 
+
+</head>
+<body>
+
+  <main class="container">
+    <div class="window">
+      
+      <!-- ORDER INFO -->
+      <div class="order-info">
+        <div class="order-info-content">
+          <h2>🧾 Order Summary</h2>
+          <div class="line"></div>
+          
+          <!-- Order items will be inserted dynamically -->
+           <ul class="cart-items" id="cart-items">
+          <!-- Cart items will be dynamically added here -->
+            </ul>
+          <div class="line"></div>
+
+          <!-- Total Summary -->
+          <div class="total-card">
+            <h3>Total Amount</h3>
+            <p id="total-amount">$0.00</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- CREDIT CARD FORM -->
+      <div class="credit-info">
+        
+            <form id="checkout-form" onsubmit="handlePayment(event)">
+            <!-- Personal Information Section -->
+            <h3 id="personal-info">Personal Information</h3>
+            <div class="form-group name-group">
+            
+              <div class="name-fields"> 
+                <label for="first-name">First Name</label>
+                <input class="input-field" type="text" id="first-name" name="first-name" required>
+              </div>
+              <div class="name-fields">
+                <label for="last-name">Last Name</label>
+                <input class="input-field" type="text" id="last-name" name="last-name" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="phone">Phone Number</label>
+                <input class="input-field" type="tel" id="phone" name="phone" required>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input class="input-field" type="email" id="buyer-email" name="email" required>
+            </div>
+
+            <!-- Payment Method Section -->
+            <h2>Payment Method</h2>
+            <div class="payment-options">
+              <div class="payment-option">
+                <input type="radio" id="bank-transfer" name="payment-method" value="bank-transfer" required>
+                <label for="bank-transfer">
+                  <img src="https://vudhgrrrialzbprixqwm.storage.supabase.co/v1/object/public/public-img//cbeLogo.png" alt="Bank Transfer" class="p-radio">
+                  <span>Bank Transfer</span>
+                </label>
+              </div>
+
+              <div class="payment-option">
+                <input type="radio" id="pickup" name="payment-method" value="pickup">
+                <label for="pickup">
+                  <img src="https://vudhgrrrialzbprixqwm.storage.supabase.co/v1/object/public/public-img//location.png" alt="Pay On Pickup" class="p-radio">
+                  <span>Pay On Pickup</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Bank Transfer Details -->
+            <div id="bank-details" class="payment-details" style="display:none;">
+              <p><strong>Acc Name:</strong> Bezawit Nigat</p>
+              <p>
+                <strong>Account Number:</strong>
+                  <div class="copy-account-container">
+                    <span id="copy-account" class="account-number">1000233243346</span>
+                    <button type="button" id="copy-account-btn" class="copy-btn">📋 Copy</button>
+                    <span id="copy-status" class="copy-status">Copied!</span>
+                  </div>
+              </p>
+              <div class="form-group">
+                <label for="transaction-id">Transaction ID</label>
+                <input class="input-field" type="text" id="transaction-id" name="transaction-id" required>
+              </div>
+            
+              <div class="form-group">
+                <label for="receipt-upload">Upload Receipt Screenshot</label>
+                <input class="input-field" type="file" id="receipt-upload" name="receipt-upload" accept="image/*" required>
+              </div>
+            </div>
+
+            <!-- Pay on Pickup Warning -->
+            <div id="pickup-warning" class="warning-box" style="display:none;">
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                <path d="M8.982 1.566a1.13 1.13 0 0 0-1.96 0L.165 13.233c-.457.778.091 1.767.98 1.767h13.713c.889 0 1.438-.99.98-1.767L8.982 1.566zM8 5c.535 0 .954.462.9.995l-.35 3.507a.552.552 0 0 1-1.1 0L7.1 5.995A.905.905 0 0 1 8 5zm.002 6a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+              </svg>
+              <span>Items are not reserved until payment is completed. Availability not guaranteed for pickup orders.</span>
+            </div>
+
+            <!-- Pay on Pickup Info -->
+            <div id="pickup-info" class="payment-details" style="display:none;">
+              <p id="contact-info"><strong>For more info contact:</strong> <br>
+                <div class="copy-email-container">
+                  <button onclick="copyEmail('davezelalem777@gmail.com')" class="copy-email-btn">
+                    📋 Copy Email Address
+                  </button>
+                  <p id="copied-message" class="copied-notification">Email copied!</p>
+                </div>
+              </p>
+            </div>
+
+            <button type="submit" class="pay-btn" id="submit-btn">
+              <span id="btn-text">Complete Order</span>
+              <span id="btn-spinner" class="spinner hidden"></span>
+            </button>
+            </form>
+        
+        </div>
+
+
+    </div>
+  </main>
+  <script src="checkout.js"></script>
+  <script src="transaction.js" type="module"></script>
+</body>
+</html>
