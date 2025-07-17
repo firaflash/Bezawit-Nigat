@@ -8,7 +8,6 @@ const productSection = document.getElementById("product-section");
 let currentImageIndex = 0;
 let imgList = [];
 let products = [];
-console.log(products);
 
 const itemInStock = (id) => {
   return products.find(item => item.id === id)?.inStock || false;
@@ -79,55 +78,102 @@ document.addEventListener('click', (e) => {
   }
 });
 
-
 window.addEventListener("DOMContentLoaded", async () => {
-  const cartCount = document.getElementById("cart-count");
-  const cartItems = document.getElementById("cart-items");
+  showLoader();
 
-  // Fetch data from Supabase
-  const { data, error } = await supabase.from("products").select("*");
-
-  if (error) {
-    console.error("Error fetching products:", error.message);
-    productSection.innerHTML = "<p>Failed to load products. Please try again later.</p>";
-    return;
+  try {
+    products = await fetchProducts();
+    processImageLists(products);
+    console.log(products);
+    renderProducts(products);
+    const cart = loadCart(products);
+    updateCartUI(cart);
+    attachCartEventListeners();
+  } catch (error) {
+    showError("Failed to load products. Please try again later.");
+    console.error(error);
+  } finally {
+    hideLoader();
+    loadBurgerMenu(); // Optional, depending on your setup
   }
+});
+function showLoader() {
+  document.getElementById("loader").style.display = "block";
+}
 
-  products = data;
-  console.log("Products loaded:", products);
+function hideLoader() {
+  document.getElementById("loader").style.display = "none";
+}
 
-  // Process image lists
+async function fetchProducts() {
+  const { data, error } = await supabase.from("products").select("*");
+  if (error) throw new Error(error.message);
+  return data;
+}
+
+function processImageLists(products) {
   products.forEach(p => {
     if (typeof p.imageLists === "string") {
       try {
         p.imageLists = JSON.parse(p.imageLists);
-      } catch (e) {
+      } catch {
         p.imageLists = [p.image];
       }
     }
   });
+}
 
-  // Load cart from storage
-  let storedCart = JSON.parse(localStorage.getItem("cart")) || [];
-  storedCart = storedCart.filter(item => itemInStock(item.id));
-  localStorage.setItem("cart", JSON.stringify(storedCart));
+function loadCart(products) {
+  const rawCart = localStorage.getItem("cart");
+  let storedCart = [];
 
-  cartCount.textContent = storedCart.length;
+  try {
+    if (rawCart && rawCart !== "undefined") {
+      storedCart = JSON.parse(rawCart);
+    }
+  } catch (e) {
+    console.warn("Corrupted cart detected. Resetting to empty.");
+    // Optionally: Keep the corrupted version for inspection:
+    localStorage.setItem("cart_backup", rawCart);  // backup for later inspection
+    localStorage.removeItem("cart");  // only clear the broken one
+    storedCart = [];
+  }
+
+  return storedCart.filter(item => itemInStock(item.id));
+}
+
+
+function updateCartUI(cart) {
+  if (!Array.isArray(cart)) {
+    cart = JSON.parse(localStorage.getItem("cart")) || [];
+  }
+
+  const cartCount = document.getElementById("cart-count");
+  const cartItems = document.getElementById("cart-items");
+
+  localStorage.setItem("cart", JSON.stringify(cart));
+  cartCount.textContent = cart.length;
   cartItems.innerHTML = "";
 
-  storedCart.forEach(item => {
+  cart.forEach(item => {
     const li = document.createElement("li");
     li.className = "cart-item";
     li.innerHTML = `
       <img src="${item.image}" alt="Artwork Thumbnail" class="cart-item-img">
       <div class="cart-item-info">
         <div class="cart-item-title">${item.title}</div>
-        <div class="cart-item-price" data-price="${item.price}">$${item.price}</div>
+        <div class="cart-item-price" data-price="${item.price}">ETB ${item.price}</div>
       </div>
       <button class="cart-item-remove">✖</button>
     `;
     cartItems.appendChild(li);
   });
+
+  updateCartTotal();
+}
+
+
+function attachCartEventListeners() {
   const clearCartBtn = document.getElementById("clear-cart");
   const checkoutBtn = document.getElementById("checkout-btn");
 
@@ -136,7 +182,7 @@ window.addEventListener("DOMContentLoaded", async () => {
       e.stopPropagation();
       if (confirm("Are you sure you want to clear your cart?")) {
         localStorage.removeItem("cart");
-        updateCartUI();
+        updateCartUI([]);
         alert("Cart cleared!");
       }
     });
@@ -148,36 +194,13 @@ window.addEventListener("DOMContentLoaded", async () => {
       proceedToCheckout();
     });
   }
-
-  updateCartTotal();
-  loadBurgerMenu();
-  renderProducts(products);
-});
-
-function scrollImages(direction) {
-  console.log("Scrolling images", direction);
-  console.log("Current index before scroll:", currentImageIndex);
-  console.log("Image list:", imgList);
-
-  const imageElement = document.getElementById("product-image");
-  if (!imageElement) return;
-
-  const newIndex = (currentImageIndex + direction + imgList.length) % imgList.length;
-  const newSrc = imgList[newIndex];
-
-  // Set opacity to indicate loading
-  imageElement.style.opacity = 0.5;
-
-  // Load new image in background before replacing
-  const tempImg = new Image();
-  tempImg.onload = () => {
-    imageElement.src = newSrc;
-    imageElement.style.opacity = 1;
-    currentImageIndex = newIndex;
-    console.log("Current index after scroll:", currentImageIndex);
-  };
-  tempImg.src = newSrc;
 }
+
+function showError(message) {
+  const productSection = document.getElementById("product-section");
+  productSection.innerHTML += `<p>${message}</p>`;
+}
+
 
 
 const AddTocart = (productId) => {
@@ -208,34 +231,10 @@ const AddTocart = (productId) => {
     inStock: selectedProduct.inStock
   });
 
-  localStorage.setItem("cart", JSON.stringify(storedCart));
-  updateCartUI();
+  updateCartUI(storedCart);
 };
 
-const updateCartUI = () => {
-  const cartCount = document.getElementById("cart-count");
-  const cartItems = document.getElementById("cart-items");
-  const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
 
-  cartCount.textContent = storedCart.length;
-  cartItems.innerHTML = "";
-
-  storedCart.forEach(item => {
-    const li = document.createElement("li");
-    li.className = "cart-item";
-    li.innerHTML = `
-      <img src="${item.image}" alt="Artwork Thumbnail" class="cart-item-img">
-      <div class="cart-item-info">
-        <div class="cart-item-title">${item.title}</div>
-        <div class="cart-item-price" data-price="${item.price}">$${item.price}</div>
-      </div>
-      <button class="cart-item-remove">✖</button>
-    `;
-    cartItems.appendChild(li);
-  });
-
-  updateCartTotal();
-};
 
 const updateCartTotal = () => {
   const prices = document.querySelectorAll(".cart-item-price");
@@ -353,8 +352,8 @@ function renderProducts(productList) {
         </div>
         <div class="bottom">
           <div class="price">
-            <span class="old">$${product.priceOld}</span>
-            <span class="new">$${product.priceNew}</span>
+            <span class="old">ETB ${product.priceOld}</span>
+            <span class="new">ETB ${product.priceNew}</span>
           </div>
           <button class="btn" ${product.inStock ? `data-id="${product.id}"` : 'disabled aria-disabled="true"'}>
             <span>Add To Cart</span>
