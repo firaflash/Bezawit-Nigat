@@ -116,14 +116,3 @@ This project is provided for educational, personal, and portfolio use.
 For commercial or extended use, please contact the developers or the artist directly.
 
 ---
-
-```
-
----
-
-### 📌 To Do:
-- Save a clean screenshot of the **landing section** as:  
-  `Images/screenshot-landing.jpg` or host it on **Imgur**, **GitHub Issues**, or **Vercel** and use a direct image link.
-  
-Let me know if you want help generating that screenshot or a GIF preview too!
-```
