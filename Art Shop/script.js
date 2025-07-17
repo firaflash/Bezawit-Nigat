@@ -162,7 +162,7 @@ function updateCartUI(cart) {
       <img src="${item.image}" alt="Artwork Thumbnail" class="cart-item-img">
       <div class="cart-item-info">
         <div class="cart-item-title">${item.title}</div>
-        <div class="cart-item-price" data-price="${item.price}">$${item.price}</div>
+        <div class="cart-item-price" data-price="${item.price}">ETB ${item.price}</div>
       </div>
       <button class="cart-item-remove">✖</button>
     `;
@@ -352,8 +352,8 @@ function renderProducts(productList) {
         </div>
         <div class="bottom">
           <div class="price">
-            <span class="old">$${product.priceOld}</span>
-            <span class="new">$${product.priceNew}</span>
+            <span class="old">ETB ${product.priceOld}</span>
+            <span class="new">ETB ${product.priceNew}</span>
           </div>
           <button class="btn" ${product.inStock ? `data-id="${product.id}"` : 'disabled aria-disabled="true"'}>
             <span>Add To Cart</span>

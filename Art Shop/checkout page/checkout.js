@@ -15,7 +15,7 @@ cartItems.forEach(item => {
     <img src="${item.image}" alt="Artwork Thumbnail" class="cart-item-img">
     <div class="cart-item-info">
       <div class="cart-item-title">${item.title}</div>
-      <div class="cart-item-price">$${item.price}</div>
+      <div class="cart-item-price">ETB ${item.price}</div>
     </div>
     <button class="cart-item-remove" onclick="removeItem(this)">✖</button>
   `;
