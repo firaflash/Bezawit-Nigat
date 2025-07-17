@@ -199,7 +199,7 @@ async function copyAccountNumber() {
   try {
     const accountNumber = document.getElementById('copy-account').textContent;
     await navigator.clipboard.writeText(accountNumber);
-    showAlert("Account number copied to clipboard!", 'success');
+    // showAlert("Account number copied to clipboard!", 'success');
   } catch (err) {
     console.error('Failed to copy:', err);
     showAlert("❌ Failed to copy account number.", 'error');

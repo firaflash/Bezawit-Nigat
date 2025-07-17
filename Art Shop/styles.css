@@ -1,12 +1,16 @@
-*, ::after, ::before {
+*,
+::after,
+::before {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
+
 html {
   scroll-behavior: smooth;
   transition: .9s linear;
-  overflow-x: hidden; /* Prevent horizontal scroll */
+  overflow-x: hidden;
+  /* Prevent horizontal scroll */
 }
 
 
@@ -16,11 +20,13 @@ body {
   color: white;
   line-height: 1.6;
 }
-section{
+
+section {
   min-height: 100vh;
   overflow-x: hidden;
 
 }
+
 /* Header */
 header {
   position: fixed;
@@ -39,9 +45,12 @@ header {
   padding: 50px 20px;
   z-index: 100;
   border-right: 2px solid #444;
-  background-color: rgba(17, 24, 39, 0.2); /* So it's visible when scrolling */
-  backdrop-filter: blur(10px); /* blur behind */
-  -webkit-backdrop-filter: blur(10px); /* for Safari */
+  background-color: rgba(17, 24, 39, 0.2);
+  /* So it's visible when scrolling */
+  backdrop-filter: blur(10px);
+  /* blur behind */
+  -webkit-backdrop-filter: blur(10px);
+  /* for Safari */
 }
 
 /* Logo */
@@ -65,6 +74,7 @@ header {
   padding: 0;
   display: none;
 }
+
 .burger-menu svg {
   width: 32px;
   height: 32px;
@@ -84,13 +94,15 @@ nav ul {
 nav ul li a {
   color: #fff;
   text-decoration: none;
-  display: inline-block; /* Enables transform */
+  display: inline-block;
+  /* Enables transform */
   transition: color 0.3s ease, transform 0.3s ease;
 }
 
 nav ul li a:hover {
   color: #ffcc00;
-  transform: translateY(-5px) translateX(3px) scale(1.1); /* Slightly larger and shifted */
+  transform: translateY(-5px) translateX(3px) scale(1.1);
+  /* Slightly larger and shifted */
 }
 
 
@@ -109,7 +121,7 @@ nav ul li a:hover {
 }
 
 /* Cart Icon - fixed top-right */
-.cart-icon {  
+.cart-icon {
   position: fixed;
   top: 20px;
   right: 25px;
@@ -147,13 +159,14 @@ nav ul li a:hover {
   font-size: 14px;
   font-weight: bold;
 }
+
 /* Cart Header */
 .cart-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 15px;
-  gap:70px;
+  gap: 70px;
 }
 
 /* Cart Title */
@@ -163,7 +176,7 @@ nav ul li a:hover {
 }
 
 /* Clear Cart Button */
-.clear{
+.clear {
   padding: 6px 8px;
   background-color: #ffffff !important;
   color: #f60000;
@@ -176,7 +189,7 @@ nav ul li a:hover {
 }
 
 .clear:hover {
-  background-color: #cc0000  !important;
+  background-color: #cc0000 !important;
   color: white;
   transform: scale(1.1);
   transition: background-color 0.3s ease;
@@ -197,7 +210,7 @@ nav ul li a:hover {
   padding: 10px 10px;
   border: 1px solid #ddd;
   border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   max-height: 2;
   opacity: 0;
   overflow: hidden;
@@ -278,7 +291,7 @@ nav ul li a:hover {
 
 .checkout-button {
   padding: 10px;
-  background-color:  #007bff !important;
+  background-color: #007bff !important;
   color: white;
   border: none;
   font-weight: bold;
@@ -292,6 +305,7 @@ nav ul li a:hover {
 .checkout-btn:hover {
   background-color: #5987b7;
 }
+
 .cart-items::-webkit-scrollbar {
   width: 6px;
 }
@@ -339,7 +353,8 @@ nav ul li a:hover {
   gap: 20px;
   align-items: center;
   min-height: 100vh;
-  flex-wrap: wrap; /* allow stacking on smaller screens */
+  flex-wrap: wrap;
+  /* allow stacking on smaller screens */
 }
 
 
@@ -349,6 +364,7 @@ nav ul li a:hover {
   object-fit: cover;
   border-radius: 15px;
 }
+
 .artist-desc .desc {
   max-width: 800px;
   flex-grow: 1;
@@ -356,10 +372,13 @@ nav ul li a:hover {
   flex-direction: column;
   justify-content: center;
 }
+
 .desc {
   padding: 30px;
-  background-color: rgba(255, 255, 255, 0.03); /* subtle highlight */
-  border-left: 4px solid #a78bfa; /* soft purple accent */
+  background-color: rgba(255, 255, 255, 0.03);
+  /* subtle highlight */
+  border-left: 4px solid #a78bfa;
+  /* soft purple accent */
   font-family: 'Merriweather', serif;
   color: #d1d5db;
   line-height: 1.9;
@@ -378,12 +397,15 @@ nav ul li a:hover {
   margin-bottom: 20px;
   font-size: 17px;
 }
+
 /* tags */
 .tags {
   display: inline-block;
   padding: 8px 16px;
-  background-color: #E0E7FF; /* Light blue background */
-  color: #3730A3;            /* Deep indigo text */
+  background-color: #E0E7FF;
+  /* Light blue background */
+  color: #3730A3;
+  /* Deep indigo text */
   border-radius: 20px;
   font-size: 14px;
   margin: 5px 8px 5px 0;
@@ -403,6 +425,7 @@ nav ul li a:hover {
   gap: 10px;
   margin-top: 22px;
 }
+
 /* Section Styles */
 
 .section-title {
@@ -441,6 +464,46 @@ nav ul li a:hover {
   justify-content: center;
 }
 
+/* HTML: <div class="loader"></div> */
+.loader {
+  width: 45px;
+  aspect-ratio: 0.75;
+  margin: 50px auto;
+  --c: no-repeat linear-gradient(#ffffff 0 0);
+  background:
+    var(--c) 0% 50%,
+    var(--c) 50% 50%,
+    var(--c) 100% 50%;
+  animation: l7 1s infinite linear alternate;
+}
+
+@keyframes l7 {
+  0% {
+    background-size: 20% 50%, 20% 50%, 20% 50%
+  }
+
+  20% {
+    background-size: 20% 20%, 20% 50%, 20% 50%
+  }
+
+  40% {
+    background-size: 20% 100%, 20% 20%, 20% 50%
+  }
+
+  60% {
+    background-size: 20% 50%, 20% 100%, 20% 20%
+  }
+
+  80% {
+    background-size: 20% 50%, 20% 50%, 20% 100%
+  }
+
+  100% {
+    background-size: 20% 50%, 20% 50%, 20% 50%
+  }
+}
+
+
 /* Card Styles */
 .card {
   background: #fff;
@@ -454,6 +517,7 @@ nav ul li a:hover {
   display: flex;
   flex-direction: column;
 }
+
 .card:hover {
   transform: translateY(-5px);
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
@@ -473,8 +537,10 @@ nav ul li a:hover {
   border-radius: 10px;
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
   z-index: 10;
-  display: hidden; /* Hidden by default */
+  display: hidden;
+  /* Hidden by default */
 }
+
 .badge.new-item {
   display: visible;
 }
@@ -482,16 +548,19 @@ nav ul li a:hover {
 .tilt {
   overflow: hidden;
 }
+
 .img {
   height: 300px;
   overflow: hidden;
 }
+
 .img img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   transition: transform 0.5s;
 }
+
 .card:hover .img img {
   transform: scale(1.05);
 }
@@ -534,6 +603,7 @@ nav ul li a:hover {
   margin-bottom: 15px;
   flex-wrap: wrap;
 }
+
 .feat {
   font-size: 10px;
   background: #f4f4f5;
@@ -551,16 +621,19 @@ nav ul li a:hover {
   flex-wrap: wrap;
   gap: 10px;
 }
+
 .price {
   display: flex;
   flex-direction: column;
 }
+
 .old {
   font-size: 13px;
   text-decoration: line-through;
   color: #A1A1AA;
   margin-bottom: 2px;
 }
+
 .new {
   font-size: 20px;
   font-weight: 700;
@@ -584,16 +657,19 @@ nav ul li a:hover {
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
   position: relative;
   overflow: hidden;
-  z-index:10;
+  z-index: 10;
 }
-.btn span{
+
+.btn span {
   text-align: center;
 }
+
 .btn:hover {
   background: linear-gradient(45deg, #27272A, #3F3F46);
   transform: translateY(-2px);
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
 }
+
 .btn:before {
   content: '';
   position: absolute;
@@ -604,12 +680,15 @@ nav ul li a:hover {
   background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
   transition: 0.5s;
 }
+
 .btn:hover:before {
   left: 100%;
 }
+
 .icon {
   transition: transform 0.3s;
 }
+
 .btn:hover .icon {
   transform: rotate(-10deg) scale(1.1);
 }
@@ -625,26 +704,31 @@ nav ul li a:hover {
   .card {
     width: 100%;
   }
+
   .title {
     font-size: 16px;
   }
+
   .img {
     height: 180px;
   }
+
   .bottom {
     flex-direction: column;
     align-items: flex-start;
     gap: 10px;
   }
+
   .btn {
     width: 100%;
     justify-content: center;
   }
-  
+
 }
 
 .read-more {
-  color: #007bff; /* Soft blue, like a link */
+  color: #007bff;
+  /* Soft blue, like a link */
   text-decoration: none;
   font-weight: 500;
   cursor: pointer;
@@ -670,7 +754,8 @@ nav ul li a:hover {
   left: 0;
   width: 100vw;
   height: 100vh;
-  background-color: rgba(0,0,0,0.3); /* semi-transparent dark background */
+  background-color: rgba(0, 0, 0, 0.3);
+  /* semi-transparent dark background */
   z-index: 10;
   justify-content: center;
   align-items: center;
@@ -682,41 +767,46 @@ nav ul li a:hover {
   margin: 40px auto;
 }
 
-.container , .container .imgBx ,.container img {
+.container,
+.container .imgBx,
+.container img {
   border-radius: 15px;
 }
 
 .container {
-    position: relative;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    width: 1090px;
-    height: 600px;
-    background: #fff;
-    margin: 20px;
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  width: 1090px;
+  height: 600px;
+  background: #fff;
+  margin: 20px;
 }
 
 .container .imgBx {
-    position: relative;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 50%;
-    height: 100%;
-    background-color: rgba(17, 24, 39, 0.9); /* So it's visible when scrolling */
-    backdrop-filter: blur(10px); /* blur behind */
-  -webkit-backdrop-filter: blur(10px); /* for Safari */
-    transition: .3s linear;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 50%;
+  height: 100%;
+  background-color: rgba(17, 24, 39, 0.9);
+  /* So it's visible when scrolling */
+  backdrop-filter: blur(10px);
+  /* blur behind */
+  -webkit-backdrop-filter: blur(10px);
+  /* for Safari */
+  transition: .3s linear;
 }
 
 
 .container .imgBx img {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    background-color: white;
-    transition: .9s linear;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background-color: white;
+  transition: .9s linear;
 }
 
 
@@ -736,7 +826,7 @@ nav ul li a:hover {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  background: rgba(255,255,255,0.2);
+  background: rgba(255, 255, 255, 0.2);
   border: none;
   color: #fff;
   font-size: 32px;
@@ -757,91 +847,127 @@ nav ul li a:hover {
 }
 
 .container .details {
-    display: flex;
-    justify-content: center;
-    /* align-items: center; */
-    width: 50%;
-    height: 100%;
-    box-sizing: border-box;
-    padding: 45px 30px;
+  display: flex;
+  justify-content: center;
+  /* align-items: center; */
+  width: 50%;
+  height: 100%;
+  box-sizing: border-box;
+  padding: 45px 30px;
 }
-.pandb{
+
+.pandb {
   margin-top: 25px;
 }
 
 
-.container .details h2{
-    margin: 0;
-    padding: 0;
-    font-size: 2.4em;
-    line-height: 1em;
-    color: #444;
+.container .details h2 {
+  margin: 0;
+  padding: 0;
+  font-size: 2.4em;
+  line-height: 1em;
+  color: #444;
   margin-bottom: 15px;
 }
 
 .container .details h2 span {
-    font-size: 0.4em;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    color: #999;
+  font-size: 0.4em;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: #999;
 }
 
 .container .details p {
-    color: #333;
-    font-size: 15px;
-    margin-bottom: 36px;
+  color: #333;
+  font-size: 15px;
+  margin-bottom: 36px;
 }
 
 .container .details h3 {
-    margin: 0;
-    padding: 0;
-    font-size: 2.5em;
-    color: #a2a2a2;
-    float: left;
+  margin: 0;
+  padding: 0;
+  font-size: 2.5em;
+  color: #a2a2a2;
+  float: left;
 }
+
 .container .details button {
-    background: #000;
-    color: #fff;
-    border: none;
-    outline: none;
-    padding: 15px 20px;
-    margin-top: 5px;
-    font-size: 16px;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    font-weight: 600;
-    border-radius: 40px;
-    float: right;
+  background: #000;
+  color: #fff;
+  border: none;
+  outline: none;
+  padding: 15px 20px;
+  margin-top: 5px;
+  font-size: 16px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  font-weight: 600;
+  border-radius: 40px;
+  float: right;
 }
+
+.footer {
+  /* background-color: #111 !important; */
+  color: #f1f1f1;
+  text-align: center;
+  padding: 20px 15px;
+  font-family: 'Instrument Serif', serif;
+  font-size: 1rem;
+  border-top: 1px solid #444;
+  position: relative;
+  z-index: 1;
+  font-weight: 600;
+}
+
+
+.footer a {
+  color: #aaa;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.footer a:hover {
+  color: #fff;
+  text-decoration: underline;
+}
+
+.footer .dev {
+  font-size: 0.85rem;
+  color: #aaa;
+  margin-top: 10px;
+}
+
 
 
 
 /* responsive */
 @media only screen and (min-width: 768px) and (max-width: 1088px) {
 
-    .container {
-      height: auto;
-      width: 800px;
-      margin-right: 30px !important;
-      margin-top: 200px !important;
-    }
-    
-  
-}
-@media screen and (max-width: 768px) {
-    /* Smartphones */
+  .container {
+    height: auto;
+    width: 800px;
+    margin-right: 30px !important;
+    margin-top: 200px !important;
+  }
 
-  
+
+}
+
+@media screen and (max-width: 768px) {
+  /* Smartphones */
+
+
   html.no-scroll,
   body.no-scroll {
-    overflow: hidden; 
+    overflow: hidden;
   }
 
   .product-section {
     margin-left: 0;
     padding: 40px 20px;
   }
-  .info .desc{
+
+  .info .desc {
     width: 260px;
     padding: 12px;
   }
@@ -862,12 +988,14 @@ nav ul li a:hover {
     align-items: center;
     padding: 0 20px;
     border: none;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   }
-  
+
   #product-modal {
-    top: 70px; /* Pushes modal content below the fixed header */
-    height: calc(100vh - 70px); /* Avoids modal overlapping the header */
+    top: 70px;
+    /* Pushes modal content below the fixed header */
+    height: calc(100vh - 70px);
+    /* Avoids modal overlapping the header */
     overflow: auto;
   }
 
@@ -883,14 +1011,15 @@ nav ul li a:hover {
     margin-top: 50px;
     height: auto;
   }
+
   .container .imgBx,
   .container .details {
     width: 100%;
     height: auto;
     padding: 0px;
   }
-  
-  
+
+
   .container .imgBx img {
     width: 100%;
     height: auto;
@@ -931,7 +1060,7 @@ nav ul li a:hover {
     flex-wrap: wrap;
     gap: 6px;
   }
-  
+
 
   .logo {
     margin-bottom: 0;
@@ -956,7 +1085,8 @@ nav ul li a:hover {
 
   main {
     margin-left: 0;
-    padding: 48px 10px 20px 10px; /* Add top padding for fixed header */
+    padding: 48px 10px 20px 10px;
+    /* Add top padding for fixed header */
   }
 
   .hero-section {
@@ -970,14 +1100,14 @@ nav ul li a:hover {
     left: 0;
     right: auto;
     transform: translateX(-100%);
-    position: fixed; 
+    position: fixed;
     top: 0;
-    width: 80%; 
-    height: 100vh; 
-    background-color: rgba(17, 24, 39, 0.9); 
+    width: 80%;
+    height: 100vh;
+    background-color: rgba(17, 24, 39, 0.9);
     backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px); 
-    z-index: 1000; 
+    -webkit-backdrop-filter: blur(10px);
+    z-index: 1000;
     transition: transform 0.3s ease-in-out;
     display: flex;
     justify-content: center;
@@ -985,7 +1115,7 @@ nav ul li a:hover {
   }
 
   nav.active {
-    transform: translateX(0); 
+    transform: translateX(0);
     box-shadow: -5px 0 15px rgba(0, 0, 0, 0.2);
   }
 
@@ -1014,7 +1144,7 @@ nav ul li a:hover {
     margin-top: 0;
     opacity: 0;
     transform: translateY(40px);
-    transition: opacity 0.4s cubic-bezier(0.4,0,0.2,1), transform 0.4s cubic-bezier(0.4,0,0.2,1);
+    transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1), transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   .social-links.active {
@@ -1022,7 +1152,8 @@ nav ul li a:hover {
     opacity: 1;
     transform: translateY(0);
   }
-   .artist-desc {
+
+  .artist-desc {
     flex-direction: column;
     align-items: center;
     gap: 20px;
@@ -1044,7 +1175,7 @@ nav ul li a:hover {
 
   .desc h2 {
     font-size: 30px;
-    
+
   }
 
   .desc p {
@@ -1057,4 +1188,3 @@ nav ul li a:hover {
   }
 
 }
-
