@@ -102,7 +102,7 @@
 
 * **Designed & Developed by**
   [Dawit Zelalem](https://github.com/Davebash) & [Firaol Feyisa](https://github.com/firaflash)
-  *Creative Front-End Developers based in Ethiopia.*
+
 
 * **Visual Content by**
   [Bezawit Nigat](#) — Architect & Visual Artist
