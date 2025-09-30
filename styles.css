@@ -377,74 +377,91 @@ main {
 
 .about-image {
   position: relative;
-  width: 75%; 
-  height: 100vh; 
-  margin-right: -300px;
+  width: 75%;
+  height: 100vh;
+  /* NO margin-right — removed completely */
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding-right: 0;
+  box-sizing: border-box;
 }
 
-.about-image .background-image {
+/* Hide buttons by default */
+.slider-btn {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+/* Show buttons on hover over .about-image */
+.about-image:hover .slider-btn {
+  opacity: 1;
+  visibility: visible;
+}
+
+.image-slider {
+  position: relative;
   width: 100%;
+  max-width: 600px;
   height: 100%;
-  object-fit: cover;
-  filter: brightness(70%);
-}
-
-.about-image .rating-box {
-  position: absolute;
-  top: 35%;
-  left: 650px;
-  transform: translate(-50%, -50%);
-  background-color: #fff;
-  padding: 8px 17px;
-  border-radius: 8px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-  z-index: 1;
-}
-
-.about-image .rating {
-  font-size: 2rem;
-  font-weight: bold;
-  color: #ffcc00;
-  margin-left: 5px;
-}
-
-.about-image .rated {
-  font-size: 1rem;
-  color: #000;
-}
-
-.about-image .artwork-preview {
-  position: absolute;
-  bottom: 25%;
-  left: 400px;
-  transform: translateX(-50%);
-  width: 600px;
-  height: 300px;
+  overflow: hidden;
   border: 5px solid #fff;
   border-radius: 10px;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
 }
 
-.about-image .profile-pic {
-  position: absolute;
-  top: 3%;
-  left: 600px;
-  width: 110px;
-  height: 110px;
-  border-radius: 50%;
-  border: 5px solid #fff;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+.slider-wrapper {
+  width: 100%;
+  height: 100%;
+  position: relative;
 }
 
-.about-image .side-pic {
+.slider-slide {
   position: absolute;
-  bottom: 1%;
-  left: 5%;
-  width: 110px;
-  height: 110px;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transition: opacity 0.6s ease-in-out;
+  pointer-events: none;
+}
+
+.slider-slide.active {
+  opacity: 1;
+  pointer-events: auto;
+  z-index: 1;
+}
+
+.slider-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.9);
+  border: none;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
-  border: 5px solid #fff;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #111827;
+}
+
+.slider-btn:hover {
+  background: white;
+}
+
+.slider-btn--left {
+  left: 12px;
+}
+
+.slider-btn--right {
+  right: 12px;
 }
 
 /* Arch Works Section */
@@ -922,8 +939,8 @@ footer p {
     max-width: 300px;
   }
   .mid-gall{
-  margin-top: 0px;
-}
+    margin-top: 0px;
+  }
 
   .gallery img {
     width: 300px;
@@ -979,59 +996,11 @@ footer p {
     height: auto;
     margin-right: 0;
     position: relative;
-    height: 60vh;
+    height: 70vh;
   }
 
-  .about-image .background-image {
-    border-radius: 10px;
-  }
-
-  .about-image .rating-box,
-  .about-image .artwork-preview,
-  .about-image .profile-pic,
-  .about-image .side-pic {
-    position: absolute;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
-  }
-
-  .about-image .rating-box {
-    top: 35%;
-    left: 91%;
-    transform: translate(-50%, -50%);
-    padding: 1px 7px;
-  }
-
-  .about-image .rating {
-    font-size: 1.3rem;
-    margin-left: 0;
-  }
-
-  .about-image .rated {
-    font-size: 0.8rem;
-  }
-  
-  .about-image .artwork-preview {
-    bottom: 33%;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 96%;
-    height: auto;
-  }
-  
-  .about-image .profile-pic {
-    top: 6%;
-    left: 85%;
-    transform: translateX(-50%);
-    width: 80px;
-    height: 80px;
-  }
-  
-  .about-image .side-pic {
-    bottom: 6%;
-    left: 5%;
-    width: 80px;
-    height: 80px;
-  }
+  .slider-btn--left { left: 5px; }
+  .slider-btn--right { right: 5px; }
 
   .arch-works {
     height: auto;
@@ -1279,39 +1248,22 @@ footer p {
   }
 
   .about-image {
-    width: 90%;
-    margin-right: 0;
-  }
-
-  .about-image .rating-box {
-    top: 37%;
-    left: 91%;
-    transform: translate(-50%, -50%);
-    padding: 17px 25px;
-  }
-
-  .about-image .artwork-preview {
-    bottom: 33%;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 96%;
     height: auto;
+    /* margin-right: 0; */
+    /* margin-left: -139px; */
+    position: relative;
+    height: 70vh;
+    width: 81vw; 
+    /* border: 5px solid #fff; */
   }
-  
-  .about-image .profile-pic {
-    top: 6%;
-    left: 85%;
-    transform: translateX(-50%);
-    width: 150px;
-    height: 150px;
-  }
-  
-  .about-image .side-pic {
-    bottom: 6%;
-    left: 5%;
-    width: 150px;
-    height: 150px;
-  }
+  .image-slider {
+    width: 100%;
+    height: 100%;
+    object-fit:cover;
+ }
+
+  .slider-btn--left { left: 5px; }
+  .slider-btn--right { right: 5px; }
 
   .arch-works {
     height: auto;
@@ -1407,54 +1359,6 @@ footer p {
     align-items: stretch;
   }
 
-
-  .about-image .rating-box,
-  .about-image .artwork-preview,
-  .about-image .profile-pic,
-  .about-image .side-pic {
-    position: absolute;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
-  }
-
-  .about-image .rating-box {
-    top: 47%;
-    left: 89%;
-    transform: translate(-50%, -50%);
-    padding: 17px 30px;
-  }
-
-  .about-image .rating {
-    font-size: 3rem;
-    margin-left: 0;
-  }
-
-  .about-image .rated {
-    font-size: 1.4rem;
-  }
-  
-  .about-image .artwork-preview {
-    bottom: 33%;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 96%;
-    height: auto;
-  }
-  
-  .about-image .profile-pic {
-    top: 6%;
-    left: 81%;
-    transform: translateX(-50%);
-    width: 200px;
-    height: 200px;
-  }
-  
-  .about-image .side-pic {
-    bottom: 6%;
-    left: 5%;
-    width: 200px;
-    height: 200px;
-  }
-
   .about-container {
     max-width: 100vw;
     box-sizing: border-box;
@@ -1480,7 +1384,7 @@ footer p {
   .about-image {
     width: 100%;
     height: auto;
-    margin: 0;
+    margin-right: -10px;
   }
 
   .arch-works-container,
@@ -1507,116 +1411,4 @@ footer p {
   }
 }
 
-/* Half-PC Screen */
-@media (min-width: 600px) and (max-width: 700px) {
-    .about-image {
-        margin-right: 0px;
-        position: relative;
-        height: 60vh;
-    }
 
-    .about-image .background-image {
-        border-radius: 10px;
-    }
-
-    .about-image .rating-box, .about-image .artwork-preview, .about-image .profile-pic, .about-image .side-pic {
-        position: absolute;
-        box-shadow: rgba(0, 0, 0, 0.5) 0px 4px 10px;
-    }
-
-    .about-image .rating-box {
-        top: 28%;
-        left: 83%;
-        transform: translate(-50%, -50%);
-        padding: 1px 7px;
-    }
-
-    .about-image .rating {
-        font-size: 1.3rem;
-        margin-left: 0px;
-    }
-
-    .about-image .rated {
-        font-size: 0.8rem;
-    }
-
-    .about-image .artwork-preview {
-        bottom: 21%;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 70%;
-        height: auto;
-    }
-
-    .about-image .profile-pic {
-        top: 5%;
-        left: 92%;
-        transform: translateX(-50%);
-        width: 70px;
-        height: 70px;
-    }
-
-    .about-image .side-pic {
-        bottom: 3%;
-        left: 3%;
-        width: 70px;
-        height: 70px;
-    }
-}
-
-
-@media (min-width: 539px) and (max-width: 540px) {
-    .about-image {
-        margin-right: 0px;
-        position: relative;
-        height: 60vh;
-    }
-
-    .about-image .background-image {
-        border-radius: 10px;
-    }
-
-    .about-image .rating-box, .about-image .artwork-preview, .about-image .profile-pic, .about-image .side-pic {
-        position: absolute;
-        box-shadow: rgba(0, 0, 0, 0.5) 0px 4px 10px;
-    }
-
-    .about-image .rating-box {
-        top: 33%;
-        left: 89%;
-        transform: translate(-50%, -50%);
-        padding: 1px 7px;
-    }
-
-    .about-image .rating {
-        font-size: 1.3rem;
-        margin-left: 0px;
-    }
-
-    .about-image .rated {
-        font-size: 0.8rem;
-    }
-
-    .about-image .artwork-preview {
-        bottom: 21%;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 85%;
-        height: auto;
-    }
-
-    .about-image .profile-pic {
-        top: 5%;
-        left: 92%;
-        transform: translateX(-50%);
-        width: 70px;
-        height: 70px;
-    }
-
-    .about-image .side-pic {
-        bottom: 3%;
-        left: 3%;
-        width: 70px;
-        height: 70px;
-    }
-}

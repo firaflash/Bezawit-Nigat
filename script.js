@@ -42,6 +42,53 @@ document.addEventListener("DOMContentLoaded", () => {
   const aboutImage = document.querySelector('.about-image');
   const imageElements = document.querySelectorAll('.about-image img, .about-image .rating-box');
 
+  // slider functionality
+  const slides = document.querySelectorAll('.slider-slide');
+  const prevBtn = document.querySelector('.slider-btn--left');
+  const nextBtn = document.querySelector('.slider-btn--right');
+  let currentIndex = 0;
+  let slideInterval;
+
+  function showSlide(index) {
+    slides.forEach((slide, i) => {
+      slide.classList.toggle('active', i === index);
+    });
+    currentIndex = index;
+  }
+
+  function nextSlide() {
+    currentIndex = (currentIndex + 1) % slides.length;
+    showSlide(currentIndex);
+  }
+
+  function startAutoSlide() {
+    slideInterval = setInterval(nextSlide, 4000); // every 4 seconds
+  }
+
+  function stopAutoSlide() {
+    clearInterval(slideInterval);
+  }
+
+  // Manual controls
+  prevBtn.addEventListener('click', () => {
+    stopAutoSlide();
+    currentIndex = (currentIndex - 1 + slides.length) % slides.length;
+    showSlide(currentIndex);
+    startAutoSlide(); // resume after manual interaction
+  });
+
+  nextBtn.addEventListener('click', () => {
+    stopAutoSlide();
+    nextSlide();
+    startAutoSlide();
+  });
+
+  aboutImage.addEventListener('mouseenter', stopAutoSlide);
+  aboutImage.addEventListener('mouseleave', startAutoSlide);
+
+  startAutoSlide();
+
+  // Scroll animation (unchanged)
   const animateOnScroll = () => {
     const sectionTop = aboutSection.getBoundingClientRect().top;
     const screenBottom = window.innerHeight;
@@ -51,12 +98,10 @@ document.addEventListener("DOMContentLoaded", () => {
       resumeBtn.classList.add('animate-fade-up');
       aboutImage.classList.add('animate-slide-right');
 
-      // Stagger image elements inside about-image
       imageElements.forEach((el, index) => {
         setTimeout(() => el.classList.add('animate-scale'), index * 150);
       });
 
-      // Unobserve after animation triggers
       observer.unobserve(aboutSection);
     }
   };
