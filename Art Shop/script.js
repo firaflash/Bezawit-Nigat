@@ -203,7 +203,7 @@ function updateCartUI(cart) {
   currentCurrency = currencySelect.value;
 
  cart.forEach(item => {
-  const convertedPrice = convertCurrency(item.priceUSD, "USD", currentCurrency);
+  const convertedPrice = convertCurrency(item.price, "USD", currentCurrency);
 
   const li = document.createElement("li");
   li.className = "cart-item";
@@ -211,11 +211,12 @@ function updateCartUI(cart) {
     <img src="${item.image}" alt="Artwork Thumbnail" class="cart-item-img">
     <div class="cart-item-info">
       <div class="cart-item-title">${item.title}</div>
-      <div class="cart-item-price" data-price-usd="${item.priceUSD}">
+      <div class="cart-item-price" data-price-usd="${convertedPrice}">
         ${currentCurrency} ${convertedPrice ? convertedPrice.toFixed(2) : "N/A"}
       </div>
     </div>
     <button class="cart-item-remove">✖</button>
+
   `;
   cartItems.appendChild(li);
 });
@@ -301,18 +302,21 @@ const AddTocart = (productId) => {
 
 
 
-
 const updateCartTotal = () => {
-  const prices = document.querySelectorAll(".cart-item-price");
+  const currentCurrency = currencySelect.value;
   let total = 0;
 
-  prices.forEach(priceEl => {
-    const price = parseFloat(priceEl.dataset.price);
-    if (!isNaN(price)) total += price;
+  document.querySelectorAll(".cart-item-price").forEach(priceEl => {
+    const priceUSD = parseFloat(priceEl.dataset.priceUsd); 
+    if (!isNaN(priceUSD)) {
+      total += convertCurrency(priceUSD, "USD", currentCurrency); 
+    }
   });
 
-  document.getElementById("cart-total").textContent = `$${total.toFixed(2)}`;
+  const currencySymbol = getCurrencySymbol(currentCurrency);
+  document.getElementById("cart-total").textContent = `${currencySymbol} ${total.toFixed(2)}`;
 };
+
 
 const removeItem = (btn) => {
   const item = btn.closest(".cart-item");
