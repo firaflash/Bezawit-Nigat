@@ -4,14 +4,56 @@ const productContainer = document.getElementById("product-container");
 const cartIcon = document.getElementById('cart-button');
 const cartList = document.querySelector('.cart-list');
 const productSection = document.getElementById("product-section");
+const currencySelect = document.getElementById("basic-select");
+const currencies = ["USD", "ETB", "EUR", "AED"];
 
 let currentImageIndex = 0;
+let currentCurrency;
 let imgList = [];
 let products = [];
+let exchangeRates = {}; // store fetched rates once
 
 const itemInStock = (id) => {
   return products.find(item => item.id === id)?.inStock || false;
 };
+
+function populateCurrencyOptions() {
+  currencies.forEach(curr => {
+    const option = document.createElement("option");
+    option.value = curr;
+    option.textContent = curr;
+    if (curr === "USD") option.selected = true; // ✅ default to USD
+    currencySelect.appendChild(option);
+  });
+}
+
+
+async function callApi(base = "USD") {
+  try {
+    const response = await fetch(`https://v6.exchangerate-api.com/v6/f8365b2d0a63b68bb3f31c5c/latest/${base}`);
+    if (!response.ok) throw new Error("Failed to fetch rates");
+    
+    const data = await response.json();
+    exchangeRates = data.conversion_rates; // save all rates in memory
+    console.log("Rates updated:", exchangeRates);
+    
+  } catch (e) {
+    console.error("Error fetching rates:", e);
+  }
+}
+
+function convertCurrency(amount, from, to) {
+  if (!exchangeRates[from] || !exchangeRates[to]) {
+    console.error("Missing currency rate(s)");
+    console.log(exchangeRates.USD)
+    return null;
+  }
+
+  // Convert from source → USD → target
+  const amountInUSD = amount / exchangeRates[from];
+  const converted = amountInUSD * exchangeRates[to];
+  return converted;
+}
 
 document.addEventListener('click', (e) => {
   // --- Modal Description Click ---
@@ -82,6 +124,8 @@ window.addEventListener("DOMContentLoaded", async () => {
   showLoader();
 
   try {
+    populateCurrencyOptions();
+    callApi();
     products = await fetchProducts();
     processImageLists(products);
     console.log(products);
@@ -155,22 +199,31 @@ function updateCartUI(cart) {
   cartCount.textContent = cart.length;
   cartItems.innerHTML = "";
 
-  cart.forEach(item => {
-    const li = document.createElement("li");
-    li.className = "cart-item";
-    li.innerHTML = `
-      <img src="${item.image}" alt="Artwork Thumbnail" class="cart-item-img">
-      <div class="cart-item-info">
-        <div class="cart-item-title">${item.title}</div>
-        <div class="cart-item-price" data-price="${item.price}">ETB ${item.price}</div>
+
+  currentCurrency = currencySelect.value;
+
+ cart.forEach(item => {
+  const convertedPrice = convertCurrency(item.priceUSD, "USD", currentCurrency);
+
+  const li = document.createElement("li");
+  li.className = "cart-item";
+  li.innerHTML = `
+    <img src="${item.image}" alt="Artwork Thumbnail" class="cart-item-img">
+    <div class="cart-item-info">
+      <div class="cart-item-title">${item.title}</div>
+      <div class="cart-item-price" data-price-usd="${item.priceUSD}">
+        ${currentCurrency} ${convertedPrice ? convertedPrice.toFixed(2) : "N/A"}
       </div>
-      <button class="cart-item-remove">✖</button>
-    `;
-    cartItems.appendChild(li);
-  });
+    </div>
+    <button class="cart-item-remove">✖</button>
+  `;
+  cartItems.appendChild(li);
+});
+
 
   updateCartTotal();
 }
+
 
 
 function attachCartEventListeners() {
@@ -179,11 +232,14 @@ function attachCartEventListeners() {
 
   if (clearCartBtn) {
     clearCartBtn.addEventListener("click", (e) => {
+      console.log("clicked the clear button")
       e.stopPropagation();
       if (confirm("Are you sure you want to clear your cart?")) {
         localStorage.removeItem("cart");
         updateCartUI([]);
         alert("Cart cleared!");
+        console.log("clicked the clear button")
+
       }
     });
   }
@@ -202,7 +258,6 @@ function showError(message) {
 }
 
 
-
 const AddTocart = (productId) => {
   const selectedProduct = products.find(p => p.id === productId);
   
@@ -210,29 +265,40 @@ const AddTocart = (productId) => {
     console.error(`Product with ID ${productId} not found.`);
     return;
   }
+
   if (!selectedProduct.inStock) {
     alert("This product is currently out of stock."); 
     return;
   }
 
   let storedCart = JSON.parse(localStorage.getItem("cart")) || [];
+
   if (storedCart.some(item => item.id === selectedProduct.id)) {
     alert("This product is already in your cart.");
     return;
   }
 
-  storedCart.push({
+  const currentCurrency = currencySelect.value; // ensure you capture it here
+
+  const cartItem = {
     id: selectedProduct.id,
     title: selectedProduct.title,
-    price: selectedProduct.priceNew,
+    price: convertCurrency(selectedProduct.priceNew, "USD", currentCurrency),
+    currency: currentCurrency,
     image: selectedProduct.image,
     category: selectedProduct.category,
     features: selectedProduct.features,
     inStock: selectedProduct.inStock
-  });
+  };
 
+  storedCart.push(cartItem);
+
+  localStorage.setItem("cart", JSON.stringify(storedCart));
   updateCartUI(storedCart);
+
+  // alert(`${selectedProduct.title} added to your cart.`);
 };
+
 
 
 
@@ -260,6 +326,8 @@ const removeItem = (btn) => {
 };
 
 function openModal(id) {
+  let selectedCurrency = currencySelect.value;
+  const baseCurrency = "USD";
   const productData = products.find(p => p.id === id);
   if (!productData) {
     console.error("Product not found:", id);
@@ -267,14 +335,15 @@ function openModal(id) {
   }
 
   imgList = Array.isArray(productData.imagelists) ? productData.imagelists : [productData.image];
-  console.log(imgList);
   currentImageIndex = 0;
 
-  // ✅ Preload images before displaying
+  // ✅ Preload images
   imgList.forEach(url => {
     const preload = new Image();
     preload.src = url;
   });
+
+  const convertedNew = convertCurrency(productData.priceNew, baseCurrency, selectedCurrency);
 
   const existingModal = document.getElementById("product-modal");
   if (existingModal) existingModal.remove();
@@ -300,7 +369,7 @@ function openModal(id) {
             ${productData.features.map(tag => `<span class="tags">#${tag}</span>`).join("")}
           </div>
           <div class="pandb">
-            <h3>$${productData.priceNew}</h3>
+            <h3 class="modal-price">${selectedCurrency} ${convertedNew ? convertedNew.toFixed(2) : "N/A"}</h3>
             <button class="btn" data-id="${productData.id}">
               <span>Add To Cart</span>
               <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -309,9 +378,7 @@ function openModal(id) {
                 <path d="M16 10a4 4 0 01-8 0"/>
               </svg>
             </button>
-            <div class="artwork-badge">
-              Limited Edition
-            </div>
+            <div class="artwork-badge">Limited Edition</div>
           </div>
         </div>
       </div>
@@ -324,12 +391,20 @@ function openModal(id) {
   modal.addEventListener("click", (e) => {
     if (e.target === modal) modal.remove();
   });
+
+ 
 }
 
 function renderProducts(productList) {
+  const baseCurrency = "USD"; // assume your product prices are stored in USD
+  const selectedCurrency = currencySelect.value;
+
   productContainer.innerHTML = "";
 
   productList.forEach(product => {
+    const convertedOld = convertCurrency(product.priceOld, baseCurrency, selectedCurrency);
+    const convertedNew = convertCurrency(product.priceNew, baseCurrency, selectedCurrency);
+
     const card = document.createElement("div");
     card.className = "card";
     card.innerHTML = `
@@ -352,8 +427,8 @@ function renderProducts(productList) {
         </div>
         <div class="bottom">
           <div class="price">
-            <span class="old">ETB ${product.priceOld}</span>
-            <span class="new">ETB ${product.priceNew}</span>
+            <span class="old">${selectedCurrency} ${convertedOld ? convertedOld.toFixed(2) : "N/A"}</span>
+            <span class="new">${selectedCurrency} ${convertedNew ? convertedNew.toFixed(2) : "N/A"}</span>
           </div>
           <button class="btn" ${product.inStock ? `data-id="${product.id}"` : 'disabled aria-disabled="true"'}>
             <span>Add To Cart</span>
@@ -370,6 +445,10 @@ function renderProducts(productList) {
     productContainer.appendChild(card);
   });
 }
+currencySelect.addEventListener("change", () => {
+  renderProducts(products);
+  updateCartUI();
+});
 
 // Cart toggle
 cartIcon.addEventListener('click', (e) => {

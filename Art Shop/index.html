@@ -54,7 +54,7 @@
                     <div class="cart-list">
                         <div class="cart-header">
                             <h3 class="cart-title">🛒 Your Cart</h3>
-                            <button class="clear" onclick="clearCart()">🗑️ Clear</button>
+                            <button class="clear" onclick="clearCart()" id="clear-cart" >🗑️ Clear</button>
                         </div>
                         <ul class="cart-items" id="cart-items">
                             <!-- Cart items will be dynamically added here -->
@@ -98,6 +98,10 @@
                 <section class="product-section" id="product-section">
                    <h2 class="section-title">Digital Art Drops</h2>
                     <p class="section-subtitle">Fresh creations from our artist’s world of imagination</p>
+                    <label for="basic-select" class="sr-only">Select something</label>
+                    <select id="basic-select" name="currency">
+                    </select>
+
                     <div class="loader" id="loader"></div>
                    <div class="product-grid" id="product-container">
                     
