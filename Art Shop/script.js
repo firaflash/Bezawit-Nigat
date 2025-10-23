@@ -54,7 +54,6 @@ function convertCurrency(amount, from, to) {
   const converted = amountInUSD * exchangeRates[to];
   return converted;
 }
-
 document.addEventListener('click', (e) => {
   // --- Modal Description Click ---
   const descElement = e.target.closest('.desc');
@@ -121,9 +120,19 @@ document.addEventListener('click', (e) => {
 });
 
 window.addEventListener("DOMContentLoaded", async () => {
+
+
   showLoader();
 
   try {
+    
+    const reciptCBE = await fetch("https://apps.cbe.com.et:100/?id=FT252908X6BC72136603")
+    if(!reciptCBE.ok){
+      console.log("Verified Recipt");
+    }else{
+      console.log("worked");
+    }
+    
     populateCurrencyOptions();
     callApi();
     products = await fetchProducts();
@@ -143,6 +152,7 @@ window.addEventListener("DOMContentLoaded", async () => {
 });
 function showLoader() {
   document.getElementById("loader").style.display = "block";
+  
 }
 
 function hideLoader() {
@@ -199,31 +209,32 @@ function updateCartUI(cart) {
   cartCount.textContent = cart.length;
   cartItems.innerHTML = "";
 
+  const currentCurrency = currencySelect.value;
 
-  currentCurrency = currencySelect.value;
+  cart.forEach(item => {
+    let displayPrice = item.price; // USD base
+    if (currentCurrency !== "USD") {
+      displayPrice = convertCurrency(item.price, "USD", currentCurrency);
+    }
 
- cart.forEach(item => {
-  const convertedPrice = convertCurrency(item.price, "USD", currentCurrency);
-
-  const li = document.createElement("li");
-  li.className = "cart-item";
-  li.innerHTML = `
-    <img src="${item.image}" alt="Artwork Thumbnail" class="cart-item-img">
-    <div class="cart-item-info">
-      <div class="cart-item-title">${item.title}</div>
-      <div class="cart-item-price" data-price-usd="${convertedPrice}">
-        ${currentCurrency} ${convertedPrice ? convertedPrice.toFixed(2) : "N/A"}
+    const li = document.createElement("li");
+    li.className = "cart-item";
+    li.innerHTML = `
+      <img src="${item.image}" alt="Artwork Thumbnail" class="cart-item-img">
+      <div class="cart-item-info">
+        <div class="cart-item-title">${item.title}</div>
+        <div class="cart-item-price" data-price-usd="${item.price}">
+          ${currentCurrency} ${displayPrice ? displayPrice.toFixed(2) : "N/A"}
+        </div>
       </div>
-    </div>
-    <button class="cart-item-remove">✖</button>
-
-  `;
-  cartItems.appendChild(li);
-});
-
+      <button class="cart-item-remove">✖</button>
+    `;
+    cartItems.appendChild(li);
+  });
 
   updateCartTotal();
 }
+
 
 
 
@@ -258,7 +269,6 @@ function showError(message) {
   productSection.innerHTML += `<p>${message}</p>`;
 }
 
-
 const AddTocart = (productId) => {
   const selectedProduct = products.find(p => p.id === productId);
   
@@ -273,18 +283,22 @@ const AddTocart = (productId) => {
   }
 
   let storedCart = JSON.parse(localStorage.getItem("cart")) || [];
+  const currencyData = {
+    selectedCurrency: currencySelect.value,
+    exchangeRates: exchangeRates
+  };
+  localStorage.setItem("selectedCurrency", JSON.stringify(currencyData));
+
 
   if (storedCart.some(item => item.id === selectedProduct.id)) {
     alert("This product is already in your cart.");
     return;
   }
 
-  const currentCurrency = currencySelect.value; // ensure you capture it here
-
   const cartItem = {
     id: selectedProduct.id,
     title: selectedProduct.title,
-    price: convertCurrency(selectedProduct.priceNew, "USD", currentCurrency),
+    price: selectedProduct.priceNew,
     currency: currentCurrency,
     image: selectedProduct.image,
     category: selectedProduct.category,
@@ -293,18 +307,17 @@ const AddTocart = (productId) => {
   };
 
   storedCart.push(cartItem);
-
   localStorage.setItem("cart", JSON.stringify(storedCart));
   updateCartUI(storedCart);
-
-  // alert(`${selectedProduct.title} added to your cart.`);
 };
+
 
 
 
 const updateCartTotal = () => {
   const currentCurrency = currencySelect.value;
   let total = 0;
+  console.log("At least reached the update cart")
 
   document.querySelectorAll(".cart-item-price").forEach(priceEl => {
     const priceUSD = parseFloat(priceEl.dataset.priceUsd); 
@@ -313,8 +326,7 @@ const updateCartTotal = () => {
     }
   });
 
-  const currencySymbol = getCurrencySymbol(currentCurrency);
-  document.getElementById("cart-total").textContent = `${currencySymbol} ${total.toFixed(2)}`;
+  document.getElementById("cart-total").textContent = `${currentCurrency} ${total.toFixed(2)}`;
 };
 
 
@@ -454,11 +466,13 @@ currencySelect.addEventListener("change", () => {
   updateCartUI();
 });
 
+
 // Cart toggle
 cartIcon.addEventListener('click', (e) => {
   e.stopPropagation();
   cartList.classList.toggle('open');
 });
+
 
 // Close cart on outside click
 window.addEventListener('click', () => {
@@ -510,6 +524,12 @@ function proceedToCheckout() {
     alert("Your cart is empty!");
     return;
   }
+
+const currencyData = {
+  selectedCurrency: currencySelect.value,
+  exchangeRates: exchangeRates
+};
+localStorage.setItem("selectedCurrency", JSON.stringify(currencyData));
 
   // Redirect to the checkout page
   window.location.href = "./checkout page/checkout.html";
