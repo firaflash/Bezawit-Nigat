@@ -5,13 +5,15 @@ const cartIcon = document.getElementById('cart-button');
 const cartList = document.querySelector('.cart-list');
 const productSection = document.getElementById("product-section");
 const currencySelect = document.getElementById("basic-select");
-const currencies = ["USD", "ETB", "EUR", "AED"];
+const currencies = ["USD", "ETB", "EUR", "AED" , "CAD"];
 
 let currentImageIndex = 0;
 let currentCurrency;
 let imgList = [];
 let products = [];
+
 let exchangeRates = {}; // store fetched rates once
+const EXCHANGE_STORAGE_KEY = "exchangeRatesData";
 
 const itemInStock = (id) => {
   return products.find(item => item.id === id)?.inStock || false;
@@ -28,19 +30,48 @@ function populateCurrencyOptions() {
 }
 
 
+// helper function to check if stored data is from today
+function isToday(timestamp) {
+  const savedDate = new Date(timestamp).toDateString();
+  const today = new Date().toDateString();
+  return savedDate === today;
+}
+
 async function callApi(base = "USD") {
   try {
+    // check if we already have data saved for today
+    const savedData = JSON.parse(localStorage.getItem(EXCHANGE_STORAGE_KEY));
+
+    if (savedData && isToday(savedData.date) && savedData.base === base) {
+      exchangeRates = savedData.rates;
+      console.log("💾 Loaded exchange rates from localStorage:", exchangeRates);
+      return; // skip API call
+    }
+
+    // otherwise fetch new data
+    console.log("🌐 Fetching new exchange rates...");
     const response = await fetch(`https://v6.exchangerate-api.com/v6/f8365b2d0a63b68bb3f31c5c/latest/${base}`);
     if (!response.ok) throw new Error("Failed to fetch rates");
-    
+
     const data = await response.json();
-    exchangeRates = data.conversion_rates; // save all rates in memory
-    console.log("Rates updated:", exchangeRates);
-    
+    exchangeRates = data.conversion_rates;
+
+    // save to localStorage with timestamp
+    localStorage.setItem(
+      EXCHANGE_STORAGE_KEY,
+      JSON.stringify({
+        base,
+        rates: exchangeRates,
+        date: Date.now()
+      })
+    );
+
+    console.log("✅ Exchange rates updated and saved:", exchangeRates);
   } catch (e) {
-    console.error("Error fetching rates:", e);
+    console.error("❌ Error fetching rates:", e);
   }
 }
+
 
 function convertCurrency(amount, from, to) {
   if (!exchangeRates[from] || !exchangeRates[to]) {
@@ -48,6 +79,7 @@ function convertCurrency(amount, from, to) {
     console.log(exchangeRates.USD)
     return null;
   }
+  
 
   // Convert from source → USD → target
   const amountInUSD = amount / exchangeRates[from];
@@ -124,15 +156,7 @@ window.addEventListener("DOMContentLoaded", async () => {
 
   showLoader();
 
-  try {
-    
-    const reciptCBE = await fetch("https://apps.cbe.com.et:100/?id=FT252908X6BC72136603")
-    if(!reciptCBE.ok){
-      console.log("Verified Recipt");
-    }else{
-      console.log("worked");
-    }
-    
+  try {   
     populateCurrencyOptions();
     callApi();
     products = await fetchProducts();

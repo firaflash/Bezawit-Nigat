@@ -4,10 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles.css">
-    <link rel="icon" href="Imgs/LightLogo.png" type="image/png">
+    <link rel="icon" href="https://euxhwztkmhzyrcwoupne.supabase.co/storage/v1/object/public/public-img/Art%20Shop%20Imgs/Timeless%20Logo.png" type="image/png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Merriweather&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
     <link href='https://fonts.googleapis.com/css?family=Instrument Serif' rel='stylesheet'>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playwrite+AU+TAS:wght@100..400&display=swap" rel="stylesheet">
 
     <meta name="description" content="Art Works - A platform for showcasing and exploring artworks.">
     <title>Art Works</title>
@@ -24,32 +27,30 @@
             </button>
 
         <!-- Logo -->
-        <div class="logo">
-            <img src="https://euxhwztkmhzyrcwoupne.supabase.co/storage/v1/object/public/public-img//WhiteTLLogo.png" alt="Logo">
+        <div class="logo" aria-label="Brand Logo">
+           <a href="../index.html"><img src="https://euxhwztkmhzyrcwoupne.supabase.co/storage/v1/object/public/public-img/Art%20Shop%20Imgs/Timeless%20Logo.png" alt="Logo"></a>
         </div>
-
+        
         <!-- Navigation -->
+        <!-- Navbar Start -->
+        <div class="nav-wrap">
         <nav>
-            <ul>
-                <li><a href="../index.html">About</a></li>
-                <li><a href="#">Arch Works</a></li>
-                <li><a href="#home">Art Shop</a></li>
-                <li><a href="../index.html#contact">Contacts</a></li>
+            <ul class="menu-bar">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="arch-works.html">Arch Works</a></li>
+            <li><a href="./Art Shop/index.html">Art Shop</a></li>
+            <li><a href="contact.html">Contacts</a></li>
             </ul>
         </nav>
-
-        <!-- Social Links -->
-        <div class="social-links">
-            <a href="https://www.instagram.com/bez_negat/"><i class="fab fa-instagram"></i></a>
-            <a href="#"><i class="fab fa-twitter"></i></a>
-            <a href="#"><i class="fab fa-facebook"></i></a>
         </div>
+        <!-- Navbar End -->
     </header>
         <!-- Fixed Cart Icon -->
                 <div class="cart-icon" id="cart-icon">
                     <button id="cart-button" class="cart_button">
                         <span class="cart-count" id="cart-count">0</span>
-                        <img src="https://euxhwztkmhzyrcwoupne.supabase.co/storage/v1/object/public/public-img/Art%20Shop%20Imgs/Cart.png" alt="Cart">
+                        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAACXBIWXMAAAsTAAALEwEAmpwYAAABTUlEQVR4nO3Wv0oDQRAG8AMrWy3UUvANbLQKeDOnQbA7ECHK7gYrG1vxAcSXEKzEF0gpuW9ywcbOXqKtFikCiv/YO1BsvLtksyDxg+2W/d3OLLsXBBMZzQLN8mGHYtxp7mx7h7UdJK8mSpcCn1Es5/kH4NgrrEm28pJL1yscr6TTmjFQhDez1p3ziiuWVrbrELteYUM4+HHYXA1C8ivc5PbiOGBFuC/ctWa5HQN8Vggrwqlr2BB2SsBJzS2M973a1XwhHMeXU4rw6KzMjJtC9KvPhAt3sJxUgJOGs1JTEpaGTZTO2AfDQX8H9kYMqkQxUgdlblVC83LLkQP4sDK8v95eUIT+0CjJUyO8nq0MZ7sOZdU+k4rxUv4w4dn+YDQjLA+FTm40dTY148G+MIpRH3Ve6diFvvsnvVHn/QGYUc8WJemZMNkYdd5/Al/5BBIN401oN4EYAAAAAElFTkSuQmCC" alt="Cart">
                     </button>
                     <div class="cart-list">
                         <div class="cart-header">
@@ -99,7 +100,7 @@
                    <h2 class="section-title">Digital Art Drops</h2>
                     <p class="section-subtitle">Fresh creations from our artist’s world of imagination</p>
                     <label for="basic-select" class="sr-only">Select something</label>
-                    <select id="basic-select" name="currency">
+                    <select id="basic-select" name="currency" class="currency-select">
                     </select>
 
                     <div class="loader" id="loader"></div>
