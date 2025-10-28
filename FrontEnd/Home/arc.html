@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Arch Works - Beauty of Art</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+  <link href='https://fonts.googleapis.com/css?family=Instrument Serif' rel='stylesheet'>
+</head>
+<body>
+
+  <section class="arch-works" id="arch-works">
+    <style>
+      .menu-bar { border-radius: 25px; height: fit-content; display: inline-flex; background-color: rgba(0,0,0,.4); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); align-items: center; padding: 0 10px; margin: 20px auto; }
+      .menu-bar li { list-style: none; color: #fff; font-family: sans-serif; font-weight: bold; padding: 12px 16px; margin: 0 8px; position: relative; cursor: pointer; white-space: nowrap; border-radius: 25px; }
+      .menu-bar a { color: #fff; text-decoration: none; }
+      .menu-bar li::before { content: " "; position: absolute; top: 0; left: 0; height: 100%; width: 100%; z-index: -1; transition: .2s; border-radius: 25px; }
+      .menu-bar li:hover::before { background: linear-gradient(to bottom, #e8edec, #d2d1d3); box-shadow: 0 3px 20px 0 black; transform: scale(1.2); }
+      .menu-bar li:hover, .menu-bar li:hover a { color: #000; }
+      .arch-works { min-height: 100vh; display: flex; flex-direction: column; justify-content: flex-start; align-items: center; }
+      .arch-works .nav-wrap { width: 100%; display: flex; justify-content: center; }
+      .arch-works footer { margin-top: 20px; }
+      .arch-works-container { margin-bottom: 0; }
+    </style>
+    <div class="nav-wrap">
+      <ul class="menu-bar">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="arch-works.html">Arch Works</a></li>
+        <li><a href="./Art Shop/index.html">Art Shop</a></li>
+        <li><a href="contact.html">Contacts</a></li>
+      </ul>
+    </div>
+    <div class="arch-works-container">
+      <div class="arch-works-header">
+        <h2>Arch Works</h2>
+        <p>Here you can see the most famous works of art. Learn the history of their creation and much more.</p>
+        <a href="#" class="explore-button">Explore Now</a>
+      </div>
+      <div class="artwork-grid">
+        <div class="gallery-wrapper">
+          <div class="arch-works-gallery-item gallery-item-1 left-animation">
+            <img src="https://euxhwztkmhzyrcwoupne.supabase.co/storage/v1/object/public/public-img//Bez1.jpg" alt="The Girl with the Pearl Earring">
+          </div>
+          <div class="image-details">
+            <p class="image-title">The Girl with the Pearl Earring</p>
+            <p class="image-artist">Johannes Vermeer<br>1665</p>
+          </div>
+        </div>
+        <div class="gallery-wrapper mid-gall">
+          <div class="arch-works-gallery-item gallery-item-2 bottom-animation">
+            <img src="https://euxhwztkmhzyrcwoupne.supabase.co/storage/v1/object/public/public-img//Bez2.jpg" alt="The Swing">
+          </div>
+          <div class="image-details">
+            <p class="image-title">The Swing</p>
+            <p class="image-artist">Jean-Honoré Fragonard<br>1767</p>
+          </div>
+        </div>
+        <div class="gallery-wrapper">
+          <div class="arch-works-gallery-item gallery-item-3 right-animation">
+            <img src="https://euxhwztkmhzyrcwoupne.supabase.co/storage/v1/object/public/public-img//Bez3.jpg" alt="Lady with an Ermine">
+          </div>
+          <div class="image-details">
+            <p class="image-title">Lady with an Ermine</p>
+            <p class="image-artist">Leonardo da Vinci<br>1490</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p>&copy; 2025 Bezawit Negat. All rights reserved.</p>
+    <p class="dev">Website Designed By <a href="https://github.com/Davebash" target="_blank" rel="noopener noreferrer">Dawit Zelalem</a> and <a href="https://github.com/firaflash" target="_blank" rel="noopener noreferrer">Firaol Feyisa</a></p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
+
