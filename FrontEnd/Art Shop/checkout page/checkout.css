@@ -229,6 +229,48 @@ main{
   flex: 1;
 }
 
+
+.currency-select {
+    padding: 10px 15px;
+    font-size: 14px;
+    border: 2px solid #e1e5e9;
+    border-radius: 8px;
+    background-color: white;
+    color: #333;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=US-ASCII,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'><path fill='%23666' d='M2 0L0 2h4zm0 5L0 3h4z'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 12px;
+    padding-right: 35px;
+    min-width: 310px;
+}
+
+.currency-select:hover {
+    border-color: #007bff;
+}
+
+.currency-select:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+}
+
+.currency-select option {
+    padding: 8px;
+    font-size: 14px;
+}
+
+/* For modern browsers */
+.currency-select option:checked {
+    background-color: #007bff;
+    color: white;
+}
+
+
+
 .payment-option input[type="radio"] {
   display: none;
 }
