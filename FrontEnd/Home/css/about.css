@@ -14,6 +14,18 @@
     z-index: 99;
 }
 
+.logo-area {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    z-index: 1001;
+}
+
+.logo-img {
+    height: 50px;
+    width: auto;
+}
+
 /* Hamburger Menu  */
 .burger-menu {
     background: rgb(141,119,210) !important;
@@ -443,6 +455,12 @@
 
 /* Smartphones */
 @media screen and (max-width: 767px) {
+    .logo-area{
+       left: 50%;
+       right: auto;
+       transform: translateX(-50%);
+    }
+    
     .burger-menu {
       display: block;
       position: fixed;
