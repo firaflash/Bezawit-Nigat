@@ -451,7 +451,19 @@
     padding-bottom: 30px !important;
 }
 
+@media only screen and (min-width: 768px) and (max-width: 1088px) {
 
+    .menu-bar li {
+    padding: 12px 12px;
+}
+  .logo img {
+    width: 110px;
+    height: auto;
+  }
+
+
+
+}
 
 /* Smartphones */
 @media screen and (max-width: 767px) {
