@@ -468,3 +468,17 @@ svg {
     }
 
 }
+@media only screen and (min-width: 768px) and (max-width: 1088px) {
+
+    .menu-bar li {
+    padding: 12px 12px;
+}
+  .logo img {
+    width: 110px;
+    height: auto;
+  }
+
+
+
+}
+
