@@ -46,13 +46,6 @@
       <a href="../Home/home.html"><img src="https://euxhwztkmhzyrcwoupne.supabase.co/storage/v1/object/public/public-img/Art%20Shop%20Imgs/Timeless%20Logo.png" alt="Logo" class="logo-img"></a>
     </div>
 
-    <!-- HamBurger Menu -->  
-    <button class="burger-menu" aria-label="Open navigation" aria-expanded="false">
-        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M5 8H13.75M5 12H19M10.25 16L19 16" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-    </button>
-
     <!-- Navbar Start -->
     <div class="nav-wrap">
       <nav>
@@ -66,6 +59,33 @@
       </nav>
     </div>
     <!-- Navbar End -->
+
+    <!-- Splash Nav Start -->
+    <nav id="nav" class="nav" role="navigation">
+      <ul class="nav__menu" id="menu" tabindex="-1" aria-label="main navigation" hidden>
+        <li class="nav__item"><a href="index.html" class="nav__link">Home</a></li>
+        <li class="nav__item"><a href="about.html" class="nav__link">About</a></li>
+        <li class="nav__item"><a href="arc.html" class="nav__link">Arch Works</a></li>
+        <li class="nav__item"><a href="./ArtShop/artPage.html" class="nav__link">Art Shop</a></li>
+        <li class="nav__item"><a href="contact.html" class="nav__link">Contacts</a></li>
+      </ul>
+
+      <a href="#nav" class="nav__toggle" role="button" aria-expanded="false" aria-controls="menu">
+        <svg class="menuicon" xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 50 50">
+          <title>Toggle Menu</title>
+          <g>
+            <line class="menuicon__bar" x1="13" y1="16.5" x2="37" y2="16.5"/>
+            <line class="menuicon__bar" x1="13" y1="24.5" x2="37" y2="24.5"/>
+            <line class="menuicon__bar" x1="13" y1="24.5" x2="37" y2="24.5"/>
+            <line class="menuicon__bar" x1="13" y1="32.5" x2="37" y2="32.5"/>
+            <circle class="menuicon__circle" r="23" cx="25" cy="25" />
+          </g>
+        </svg>
+      </a>
+      
+      <div class="splash"></div>
+    </nav>
+    <!-- Splash Nav End -->
 
 
     <!-- Header Start -->
@@ -442,7 +462,7 @@
     <!-- Template Javascript -->
     <script src="js/main.js"></script>
 
-    <script src="js/custom.js"></script>
+    <script src="js/about.js"></script>
 
     
 </body>

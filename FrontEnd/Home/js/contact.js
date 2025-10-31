@@ -56,48 +56,51 @@
 
         
 document.addEventListener('DOMContentLoaded', () => {
-    const burgerMenu = document.querySelector('.burger-menu');
-    const nav = document.querySelector('nav');
-    const body = document.body;
-    const html = document.documentElement;
-    const socialLinks = document.querySelector('.social-links');
-  
-    if (burgerMenu && nav) {
-      burgerMenu.addEventListener('click', () => {
-        // Toggle active classes
-        nav.classList.toggle('active');
-        burgerMenu.classList.toggle('active');
-        console.log("first");
-        if (socialLinks) {
-          if (nav.classList.contains('active')) {
-            console.log("ft");
-            setTimeout(() => {
-              if (nav.classList.contains('active')) {
-                socialLinks.classList.add('active');
-              }
-            }, 350);
-          } else {
-            socialLinks.classList.remove('active');
+  // Splash Nav Toggle and A11y
+  const splashNav = document.querySelector('#nav');
+  const splashMenu = document.querySelector('#menu');
+  const splashToggle = document.querySelector('.nav__toggle');
+  let splashOpen = false;
+
+  if (splashNav && splashMenu && splashToggle) {
+    splashToggle.addEventListener('click', (e) => {
+      e.preventDefault();
+      // Open
+      if (!splashOpen) {
+        splashOpen = true;
+        splashToggle.setAttribute('aria-expanded', 'true');
+        splashNav.classList.add('nav--open');
+        // Reveal the list after splash expands (~500ms)
+        setTimeout(() => {
+          splashMenu.hidden = false;
+        }, 500);
+      } else {
+        // Close
+        splashOpen = false;
+        splashToggle.setAttribute('aria-expanded', 'false');
+        splashMenu.hidden = true;
+        splashNav.classList.remove('nav--open');
+      }
+    });
+
+    // Trap Tab inside menu when open
+    splashNav.addEventListener('keydown', (e) => {
+      if (!splashOpen || e.ctrlKey || e.metaKey || e.altKey) return;
+      const menuLinks = splashMenu.querySelectorAll('.nav__link');
+      if (!menuLinks.length) return;
+      if (e.key === 'Tab' || e.keyCode === 9) {
+        if (e.shiftKey) {
+          if (document.activeElement === menuLinks[0]) {
+            splashToggle.focus();
+            e.preventDefault();
           }
+        } else if (document.activeElement === splashToggle) {
+          menuLinks[0].focus();
+          e.preventDefault();
         }
-        
-        // Prevent body scroll when nav is active
-        if (nav.classList.contains('active')) {
-        console.log("fit");
-  
-          body.classList.add('no-scroll');
-          html.classList.add('no-scroll');
-        } else {
-        console.log("zero");
-  
-          body.classList.remove('no-scroll');
-          html.classList.remove('no-scroll');
-        }
-  
-        const isExpanded = nav.classList.contains('active');
-        burgerMenu.setAttribute('aria-expanded', isExpanded);
-      });
-    }
+      }
+    });
+  }
     
     // Hide spinner after full page load
     window.addEventListener('load', function () {
