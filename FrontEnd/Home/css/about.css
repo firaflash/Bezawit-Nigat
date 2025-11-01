@@ -620,10 +620,11 @@
 .menuicon__bar,
 .menuicon__circle {
   fill: none;
-  stroke: currentColor;
+  stroke: rgb(98,69,196);
   stroke-width: 3;
   stroke-linecap: round;
 }
+
 
 .menuicon__bar {
   transform: rotate(0deg);

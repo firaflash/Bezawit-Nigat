@@ -28,49 +28,49 @@
 });
 
 // Project descriptions data
-const projectDescriptions = {
-    1: {
+const projectDescriptions = [
+    {
         title: "Architectural Visualization",
         image: "img/project-1.jpg",
         description: "A detailed architectural visualization project showcasing modern residential design. This piece combines technical precision with artistic flair to create compelling visual representations of architectural concepts.",
         details: "• Medium: Digital Rendering<br>• Duration: 2 weeks<br>• Client: Private Residential<br>• Tools: AutoCAD, 3ds Max, Photoshop"
     },
-    2: {
+    {
         title: "Watercolor Portrait",
         image: "img/project-2.jpg", 
         description: "An intimate watercolor portrait capturing the essence of human emotion through delicate brushwork and careful color composition. This piece demonstrates the artist's mastery of traditional painting techniques.",
         details: "• Medium: Watercolor on Paper<br>• Duration: 1 week<br>• Client: Personal Commission<br>• Size: 16x20 inches"
     },
-    3: {
+    {
         title: "3D Architectural Model",
         image: "img/project-3.jpg",
         description: "A comprehensive 3D architectural model created for client presentation. This project showcases the integration of architectural knowledge with digital modeling skills to produce realistic visualizations.",
         details: "• Medium: 3D Digital Model<br>• Duration: 3 weeks<br>• Client: Commercial Development<br>• Tools: Revit, Lumion, SketchUp"
     },
-    4: {
+    {
         title: "Digital Art Commission",
         image: "img/project-4.jpg",
         description: "A contemporary digital artwork commissioned for a corporate client. This piece represents the fusion of traditional artistic principles with modern digital techniques.",
         details: "• Medium: Digital Art<br>• Duration: 1.5 weeks<br>• Client: Corporate Branding<br>• Tools: Adobe Creative Suite, Procreate"
     },
-    5: {
+    {
         title: "Concept Design",
         image: "img/project-5.jpg",
         description: "An innovative concept design exploring new possibilities in architectural form and function. This project demonstrates creative problem-solving and forward-thinking design approaches.",
         details: "• Medium: Mixed Media<br>• Duration: 2.5 weeks<br>• Client: Design Competition<br>• Tools: Hand Drawing, Digital Enhancement"
     },
-    6: {
+    {
         title: "Artistic Illustration",
         image: "img/project-6.jpg",
         description: "A creative illustration that blends architectural elements with artistic expression. This piece showcases the unique ability to merge technical drawing skills with creative vision.",
         details: "• Medium: Mixed Media<br>• Duration: 1 week<br>• Client: Art Gallery<br>• Tools: Watercolor, Digital Enhancement"
     }
-};
+];
 
 // Function to show project description
 function showProjectDescription(projectId) {
     const modal = document.getElementById('projectModal');
-    const project = projectDescriptions[projectId];
+    const project = projectDescriptions[projectId - 1]; // Convert to 0-based index
     
     if (project) {
         document.getElementById('projectTitle').textContent = project.title;

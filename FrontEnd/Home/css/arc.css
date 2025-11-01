@@ -1,5 +1,6 @@
 html {
-  overflow-x: hidden; }
+  overflow-x: hidden; 
+}
 
 body {
   font-family: "Inter", sans-serif;
@@ -9,7 +10,6 @@ body {
   background: #fff;
   overflow-x: hidden; 
 }
-
 
 body:before {
   content: "";
@@ -30,6 +30,29 @@ body:before {
 body.offcanvas-menu:before {
   opacity: 1;
   visibility: visible; 
+}
+
+/* Back to Top Button */
+.back-to-top {
+    position: fixed;
+    display: none;
+    right: 45px;
+    bottom: 45px;
+    z-index: 99;
+    width: 50px !important;
+    height: 50px !important;
+    min-width: 40px !important;
+    /* border-radius: 50% !important; */
+    align-items: center;
+    justify-content: center;
+    padding: 0 !important;
+    font-size: 16px !important;
+    line-height: 1;
+}
+
+.back-to-top i {
+    font-size: 18px !important;
+    line-height: 1;
 }
 
 .logo-area {
@@ -640,7 +663,7 @@ h1, .h1, h2, .h2, h3, .h3, h4, .h4 {
 .menuicon__bar,
 .menuicon__circle {
   fill: none;
-  stroke: currentColor;
+  stroke: rgb(98,69,196);
   stroke-width: 3;
   stroke-linecap: round;
 }
