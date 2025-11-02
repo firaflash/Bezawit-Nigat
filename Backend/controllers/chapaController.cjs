@@ -6,42 +6,53 @@ const CHAPA_KEY = process.env.CHAPA_SECRET_KEY;
 const proceedPayment = async function (req, res) {
   try {
     const txRef = "chewatatest-" + Date.now();
+
+    console.log("Received orderInfo:", req.body);
+    const orderInfo = req.body.orderInfo;
+
     const payload = {
-      amount: "20.3",
-      currency: "ETB",
-      email: "muchagraciasfira@gmail.com",
-      first_name: "Fira",
-      last_name: "Flash",
-      phone_number: "0912345678",
+      amount: orderInfo.total, 
+      currency: orderInfo.Currency, 
+      email: orderInfo.email,
+      first_name: orderInfo.firstName,
+      last_name: orderInfo.lastName,
+      phone_number: orderInfo.phoneNumber,
       tx_ref: txRef,
-      callback_url: "https://hungry-doodles-vanish.loca.lt/api/Chapa/Verify",
-      return_url: "http://localhost:5555/",
-      "customization[title]": "Payment for favorite merchant",
-      "customization[description]": "Online payment test",
+      callback_url: "https://hungry-doodles-vanish.loca.lt/https://hungry-doodles-vanish.loca.lt/api/Chapa/Verify",
+      return_url: "http://localhost:5555/ArtShop/artPage.html",
+      customization: {
+        title: "TimeLess",
+        description: "Online payment test",
+        logo:
+          "https://euxhwztkmhzyrcwoupne.supabase.co/storage/v1/object/public/public-img/Art%20Shop%20Imgs/Timeless%20Logo.png",
+      },
     };
 
     const response = await fetch("https://api.chapa.co/v1/transaction/initialize", {
       method: "POST",
       headers: {
-        "Authorization": `Bearer ${CHAPA_KEY}`,
+        Authorization: `Bearer ${CHAPA_KEY}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify(payload),
     });
 
     const data = await response.json();
-    console.log("Chapa Init:", data);
+    console.log("Chapa Init Response:", data);
 
     if (data.status === "success") {
       res.json(data);
     } else {
-      res.status(400).json({ error: "Payment initialization failed", details: data });
+      res.status(400).json({
+        error: "Payment initialization failed",
+        details: data,
+      });
     }
   } catch (error) {
     console.error("Error initializing payment:", error.message);
     res.status(500).json({ error: "Internal server error" });
   }
-}
+};
 
 // Verify Payment
 const verifyPayment = async function (req, res) {

@@ -12,8 +12,7 @@ const config = {
 const elements = {
   form: document.getElementById('checkout-form'),
   btnText: document.getElementById('btn-text'),
-  btnSpinner: document.getElementById('btn-spinner'),
-  
+  btnSpinner: document.getElementById('btn-spinner')
 };
 
 // Initialize EmailJS
@@ -22,7 +21,11 @@ emailjs.init("6ZBoLbxtk8Fcy_CNQ");
 // Main form handler
 elements.form.addEventListener('submit', handleBankTransferVerification);
 
+
+
+
 async function handleBankTransferVerification(e) {
+
   e.preventDefault();
   setLoadingState(true);
 
@@ -32,11 +35,10 @@ async function handleBankTransferVerification(e) {
     
     // Process order
     const orderData = prepareOrderData();
-    const receiptUrl = await uploadReceipt(orderData.receiptFile);
-    await createSalesRequest({ ...orderData, receiptUrl });
-    await sendConfirmationEmail(orderData, receiptUrl);
+    console.log(orderData);
+    await sendConfirmationEmail(orderData);
+    await sendPayment(orderData);
     
-    // Success handling
     handleSuccess();
   } catch (error) {
     handleError(error);
@@ -45,6 +47,35 @@ async function handleBankTransferVerification(e) {
   }
 }
 
+async function sendPayment(orderInfo) {
+  console.log(orderInfo);
+  try {
+    const response = await fetch('/api/Chapa/ProceedPayment', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ orderInfo })
+    });
+
+    const data = await response.json();
+    console.log("Response from backend:", data);
+
+    if (data.status === "success" && data.data.checkout_url) {
+      // Redirect user to Chapa checkout
+      window.location.href = data.data.checkout_url;
+    } else {
+      alert('Payment failed: ' + (data.error || data.message));
+    }
+  } catch (err) {
+    console.error("Error occurred:", err);
+    alert("Something went wrong. Please try again.");
+  }
+}
+
+
+
+
 // Helper functions
 function setLoadingState(isLoading) {
   elements.btnText.textContent = isLoading ? 'Processing...' : 'Complete Order';
@@ -52,29 +83,22 @@ function setLoadingState(isLoading) {
 }
 
 function validateForm() {
-  const isBankTransfer = document.getElementById('bank-transfer').checked;
-  if (!isBankTransfer) {
-    showAlert("Only bank transfer is supported right now.", 'warning');
-    return false;
-  }
+
 
   const cartItems = JSON.parse(localStorage.getItem("cart")) || [];
   if (cartItems.length === 0) {
     showAlert("Your cart is empty.", 'warning');
     return false;
   }
-
-  // Add more validations as needed
   return true;
 }
 
 function prepareOrderData() {
-  const buyer_email = document.getElementById('buyer-email').value.trim();
-  const transactionId = document.getElementById('transaction-id').value.trim();
-  const receiptFile = document.getElementById('receipt-upload').files[0];
+  const email = document.getElementById('buyer-email').value.trim();
+  const currencyData = JSON.parse(localStorage.getItem("selectedCurrency")) || { selectedCurrency: "USD", exchangeRates: {} };
+  const Currency = currencyData.selectedCurrency;
   const firstName = document.getElementById('first-name').value.trim();
   const lastName = document.getElementById('last-name').value.trim();
-  const fullName = `${firstName} ${lastName}`;
   const phoneNumber = document.getElementById('phone').value.trim();
   const cartItems = JSON.parse(localStorage.getItem("cart")) || [];
 
@@ -83,10 +107,10 @@ function prepareOrderData() {
   const total = subtotal.toFixed(2);
 
   return {
-    buyer_email,
-    transactionId,
-    receiptFile,
-    fullName,
+    email,
+    Currency,
+    firstName,
+    lastName,
     phoneNumber,
     cartItems,
     productIds,
@@ -95,64 +119,19 @@ function prepareOrderData() {
   };
 }
 
-async function uploadReceipt(file) {
-  try {
-    const filePath = `uploads/${Date.now()}_${file.name}`;
-    
-    // Validate file type
-    const validTypes = ['image/jpeg', 'image/png', 'application/pdf'];
-    if (!validTypes.includes(file.type)) {
-      throw new Error('Please upload a JPEG, PNG, or PDF file');
-    }
-
-    const { data, error } = await supabase.storage
-      .from(config.storageBucket)
-      .upload(filePath, file, {
-        cacheControl: '3600',
-        upsert: false
-      });
-
-    if (error) throw error;
-
-    return supabase.storage
-      .from(config.storageBucket)
-      .getPublicUrl(data.path).data.publicUrl;
-  } catch (error) {
-    console.error('Receipt upload failed:', error);
-    throw new Error('Receipt upload failed. Please try again.');
-  }
-}
-
-async function createSalesRequest(orderData) {
-  const { error } = await supabase
-    .from('sales_requests')
-    .insert([{
-      email: orderData.buyer_email,
-      full_name: orderData.fullName,
-      phone_number: orderData.phoneNumber,
-      transaction_id: orderData.transactionId,
-      receipt_url: orderData.receiptUrl,
-      product_ids: orderData.productIds,
-      total_price: orderData.total,
-      status: 'pending'
-    }]);
-
-  if (error) throw error;
-}
-
-async function sendConfirmationEmail(orderData, receiptUrl) {
+async function sendConfirmationEmail(orderData) {
 const templateParams = {
-    website_url: "https://yourwebsite.com", // Add your website URL
+    website_url: "https://bezawit-nigat.vercel.app",
     buyer_name: orderData.fullName,
-    buyer_email: orderData.buyer_email,
+    buyer_email: orderData.email,
     order_number: `ORD-${Date.now().toString().slice(-6)}`, // Generate a simple order number
     order_date: new Date().toLocaleDateString('en-US', { 
       year: 'numeric', 
       month: 'long', 
       day: 'numeric' 
     }),
-    transaction_id: orderData.transactionId,
-    receipt_url: receiptUrl,
+    transaction_id: 'TX-NEW_ID',
+    receipt_url: "https://bezawit-nigat.vercel.app/ArtShop/artPage.html",
     products: orderData.cartItems.map(item => ({
       title: item.title,
       price: item.price.toFixed(2)
@@ -174,10 +153,9 @@ const templateParams = {
 }
 
 function handleSuccess() {
+  localStorage.removeItem("cart");
   showAlert("✅ Payment verification submitted and confirmation email sent.", 'success');
   elements.form.reset();
-  localStorage.removeItem("cart");
-  // Optional: Redirect to confirmation page
 }
 
 function handleError(error) {
@@ -187,21 +165,5 @@ function handleError(error) {
 }
 
 function showAlert(message, type = 'info') {
-  // Replace with your preferred notification system
   alert(message); 
-  // Consider using a proper toast/notification library
-}
-
-// Account copy function
-document.getElementById('copy-account-btn').addEventListener('click', copyAccountNumber);
-
-async function copyAccountNumber() {
-  try {
-    const accountNumber = document.getElementById('copy-account').textContent;
-    await navigator.clipboard.writeText(accountNumber);
-    // showAlert("Account number copied to clipboard!", 'success');
-  } catch (err) {
-    console.error('Failed to copy:', err);
-    showAlert("❌ Failed to copy account number.", 'error');
-  }
 }

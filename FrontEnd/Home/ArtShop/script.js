@@ -211,7 +211,6 @@ function loadCart(products) {
     }
   } catch (e) {
     console.warn("Corrupted cart detected. Resetting to empty.");
-    // Optionally: Keep the corrupted version for inspection:
     localStorage.setItem("cart_backup", rawCart);  // backup for later inspection
     localStorage.removeItem("cart");  // only clear the broken one
     storedCart = [];
