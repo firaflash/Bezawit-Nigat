@@ -19,7 +19,7 @@ const proceedPayment = async function (req, res) {
       phone_number: orderInfo.phoneNumber,
       tx_ref: txRef,
       callback_url: `https://bezawit-nigat.vercel.app/api/chapa/Verify`,
-      return_url: `https://bezawit-nigat.vercel.app/artShop/artPage.html`,
+      return_url: "https://bezawit-nigat-dy96ki24a-firaflashs-projects.vercel.app/artShop/artPage.html",
       customization: {
         title: "TimeLess",
         description: "Online payment test",
