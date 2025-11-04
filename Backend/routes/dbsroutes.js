@@ -1,10 +1,10 @@
 import { Router } from "express";
-import supabase from '../controllers/supabase.cjs';
+import { fetchProducts , sellProduct }  from '../controllers/supabase.js';
 
-const { fetchPtoducts , sellProduct } = supabase;
+
 const router = Router();
 
-router.post("/fetchProduct", proceedPayment);
+router.post("/fetchProduct", fetchProducts);
 router.post("/sellProduct", sellProduct);
 
 

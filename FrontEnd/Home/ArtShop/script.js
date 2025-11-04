@@ -182,12 +182,24 @@ function showLoader() {
 function hideLoader() {
   document.getElementById("loader").style.display = "none";
 }
-
 async function fetchProducts() {
-  const { data, error } = await supabase.from("products").select("*");
-  if (error) throw new Error(error.message);
+  const response = await fetch("http://localhost:5555/api/dbs/fetchProduct", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    // if your backend expects body data, include it:
+    body: JSON.stringify({}) // or remove this if not needed
+  });
+
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+
+  const data = await response.json();
   return data;
 }
+
 
 function processImageLists(products) {
   products.forEach(p => {

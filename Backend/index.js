@@ -2,6 +2,7 @@ import express from "express";
 import path from "path";
 import { fileURLToPath } from 'url';
 import chapaRoutes from "./routes/chapaRoutes.js";
+import supaBaseRoutes from './routes/dbsroutes.js'
 import dotenv from 'dotenv';
 
 const app = express();
@@ -19,6 +20,7 @@ app.use(express.static(frontendPath));
 
 app.use(express.json());
 app.use('/api/Chapa', chapaRoutes);
+app.use('/api/dbs', supaBaseRoutes)
 
 // ✅ CORRECT: Serve index.html from Frontend folder
 app.get('/', (req, res) => {
