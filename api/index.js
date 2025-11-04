@@ -2,6 +2,8 @@ import express from "express";
 import path from "path";
 import { fileURLToPath } from 'url';
 import chapaRoutes from "./chapaRoutes.js";
+import supaBaseRoutes from './dbsroutes.js'
+
 import dotenv from 'dotenv';
 
 const app = express();
@@ -18,6 +20,9 @@ app.use(express.static(frontendPath));
 
 app.use(express.json());
 app.use('/api/chapa', chapaRoutes);
+app.use('/api/dbs', supaBaseRoutes)
+
+
 
 app.get('/', (req, res) => {
   res.sendFile(path.join(frontendPath, 'index.html'));
