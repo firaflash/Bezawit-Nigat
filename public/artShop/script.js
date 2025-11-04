@@ -184,13 +184,14 @@ function hideLoader() {
 }
 
 async function fetchProducts() {
-  const response = await fetch("http://localhost:5555/api/dbs/fetchProduct", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({}) 
-  });
+    const response = await fetch("/api/dbs/fetchProduct", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({})
+        });
+
 
   if (!response.ok) {
     throw new Error(`HTTP error! status: ${response.status}`);
