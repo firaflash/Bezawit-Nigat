@@ -100,11 +100,8 @@ $(function(){
 				autoplay: true,
 				smartSpeed: 1000,
 				items: 1,
-				nav: true,
-				navText: ['<span class="icon-keyboard_backspace"></span>','<span class="icon-keyboard_backspace"></span>'],
-				onTranslated: function(event) {
-					
-				}
+                nav: true,
+                navText: ['<span class="icon-keyboard_backspace"></span>','<span class="icon-keyboard_backspace"></span>']
 			});
 
 			owl.on('initialized.owl.carousel', function(event) {

@@ -44,12 +44,10 @@ async function callApi(base = "USD") {
 
     if (savedData && isToday(savedData.date) && savedData.base === base) {
       exchangeRates = savedData.rates;
-      console.log("💾 Loaded exchange rates from localStorage:", exchangeRates);
       return; // skip API call
     }
 
     // otherwise fetch new data
-    console.log("🌐 Fetching new exchange rates...");
     const response = await fetch(`https://v6.exchangerate-api.com/v6/f8365b2d0a63b68bb3f31c5c/latest/${base}`);
     if (!response.ok) throw new Error("Failed to fetch rates");
 
@@ -66,7 +64,7 @@ async function callApi(base = "USD") {
       })
     );
 
-    console.log("✅ Exchange rates updated and saved:", exchangeRates);
+    // rates saved to localStorage above
   } catch (e) {
     console.error("❌ Error fetching rates:", e);
   }
@@ -161,7 +159,6 @@ window.addEventListener("DOMContentLoaded", async () => {
     callApi();
     products = await fetchProducts();
     processImageLists(products);
-    console.log(products);
     renderProducts(products);
     const cart = loadCart(products);
     updateCartUI(cart);
@@ -210,7 +207,7 @@ function loadCart(products) {
       storedCart = JSON.parse(rawCart);
     }
   } catch (e) {
-    console.warn("Corrupted cart detected. Resetting to empty.");
+    // Corrupted cart detected. Resetting to empty.
     localStorage.setItem("cart_backup", rawCart);  // backup for later inspection
     localStorage.removeItem("cart");  // only clear the broken one
     storedCart = [];
@@ -267,13 +264,11 @@ function attachCartEventListeners() {
 
   if (clearCartBtn) {
     clearCartBtn.addEventListener("click", (e) => {
-      console.log("clicked the clear button")
       e.stopPropagation();
       if (confirm("Are you sure you want to clear your cart?")) {
         localStorage.removeItem("cart");
         updateCartUI([]);
         alert("Cart cleared!");
-        console.log("clicked the clear button")
 
       }
     });
@@ -340,7 +335,6 @@ const AddTocart = (productId) => {
 const updateCartTotal = () => {
   const currentCurrency = currencySelect.value;
   let total = 0;
-  console.log("At least reached the update cart")
 
   document.querySelectorAll(".cart-item-price").forEach(priceEl => {
     const priceUSD = parseFloat(priceEl.dataset.priceUsd); 
