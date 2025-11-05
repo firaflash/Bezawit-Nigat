@@ -10,6 +10,6 @@ export const fetchProducts = async (req, res) => {
   res.json(data);
 };
 
-export const sellProduct = async (req, res) => {
-  // implement later
+export const sellProduct = async () => {
+
 };

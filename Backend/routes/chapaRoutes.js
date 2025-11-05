@@ -1,7 +1,5 @@
-import { Router } from 'express';
-import chapaController from '../controllers/chapaController.cjs';
-
-const { proceedPayment, verifyPayment } = chapaController;
+import { Router } from "express";
+import { proceedPayment, verifyPayment } from "../controllers/chapaController.js";
 
 const router = Router();
 
