@@ -1379,6 +1379,11 @@ color: #fff ;
   line-height: 1;
 }
 
+.back-to-top:hover {
+  transform: translateY(-2px);
+  color: whitesmoke;
+}
+
 @media screen and (max-width: 768px) {
   .back-to-top {
     right: 14px;
