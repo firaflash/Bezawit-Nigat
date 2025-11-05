@@ -19,10 +19,13 @@ const proceedPayment = async function (req, res) {
       phone_number: orderInfo.phoneNumber,
       tx_ref: txRef,
       callback_url: `https://bezawit-nigat.vercel.app/api/chapa/Verify`,
-      return_url: "https://bezawit-nigat-dy96ki24a-firaflashs-projects.vercel.app/artShop/artPage.html",
+      return_url: "https://bezawit-nigat.vercel.app/artShop/index.html",
       customization: {
         title: "TimeLess",
-        description: "Online payment test",
+        description: orderData.cartItems.map(item => ({
+          title: item.title,
+          price: item.price.toFixed(2)
+        })),
         logo:
           "https://euxhwztkmhzyrcwoupne.supabase.co/storage/v1/object/public/public-img/Art%20Shop%20Imgs/Timeless%20Logo.png",
       },
@@ -72,6 +75,7 @@ const verifyPayment = async function (req, res) {
 
     if (data.status === "success" && data.data.status === "success") {
       console.log("✅ Payment verified successfully!");
+      
     } else {
       console.log("❌ Payment not successful:", data.data.status);
     }
