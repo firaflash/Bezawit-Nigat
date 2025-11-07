@@ -21,6 +21,8 @@ window.addEventListener("DOMContentLoaded", () => {
 });
 
 function convertCurrency(amount, from, to) {
+  to = to.toLowerCase();
+  from = from.toLowerCase();
   if (!exchangerate[from] || !exchangerate[to]) {
     console.error("Missing currency rate(s)");
     console.log(exchangerate.USD);

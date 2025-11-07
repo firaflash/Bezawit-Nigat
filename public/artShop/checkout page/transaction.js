@@ -1,15 +1,11 @@
-import { supabase } from '../config/supabaseClient.js';
-
-// DOM Elements
 const elements = {
   form: document.getElementById('checkout-form'),
   btnText: document.getElementById('btn-text'),
   btnSpinner: document.getElementById('btn-spinner')
 };
 
-
-// Main form handler
 elements.form.addEventListener('submit', handleBankTransferVerification);
+
 async function handleBankTransferVerification(e) {
   e.preventDefault();
   setLoadingState(true);
@@ -18,13 +14,16 @@ async function handleBankTransferVerification(e) {
     // 1. Validate form
     if (!validateForm()) return;
     const orderData = prepareOrderData();
+
     const paymentResult = await sendPayment(orderData);
+
     if (paymentResult.status !== 'success') {
       alert(paymentResult.error || 'Payment initiation failed.');
       return;
     }
+
     window.location.href = paymentResult.checkoutUrl;
-    sendConfirmationEmail(orderData).catch(console.warn);
+    // sendConfirmationEmail(orderData).catch(console.warn);
     handleSuccess();
 
   } catch (error) {
@@ -70,7 +69,6 @@ async function sendPayment(orderInfo) {
 
 
 
-
 // Helper functions
 function setLoadingState(isLoading) {
   elements.btnText.textContent = isLoading ? 'Processing...' : 'Complete Order';
@@ -87,36 +85,46 @@ function validateForm() {
   }
   return true;
 }
-
 function prepareOrderData() {
-  const email = document.getElementById('buyer-email').value.trim();
-  const currencyData = JSON.parse(localStorage.getItem("selectedCurrency")) || { selectedCurrency: "USD", exchangeRates: {} };
-  const Currency = currencyData.selectedCurrency;
-  const firstName = document.getElementById('first-name').value.trim();
-  const lastName = document.getElementById('last-name').value.trim();
-  const phoneNumber = document.getElementById('phone').value.trim();
-  const cartItems = JSON.parse(localStorage.getItem("cart")) || [];
+  // ---- user fields ----
+  const email      = document.getElementById('buyer-email').value.trim();
+  const firstName  = document.getElementById('first-name').value.trim();
+  const lastName   = document.getElementById('last-name').value.trim();
+  const phoneNumber= document.getElementById('phone').value.trim();
 
+  // ---- phone validation (unchanged) ----
   const phoneRegex = /^(?:\+\d{1,3}[-.\s]?)?(?:\(\d{1,4}\)[\s.-]?)?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}$/;
-  const cleanDigits = phoneNumber.replace(/[^\d+]/g, '').replace(/^\+/, '');
-  if (!phoneRegex.test(phoneNumber) || cleanDigits.length < 10) {
-    throw new Error('Please enter a valid phone number.');
+  const clean = phoneNumber.replace(/[^\d+]/g, '').replace(/^\+/, '');
+  if (!phoneRegex.test(phoneNumber) || clean.length < 10) {
+    throw new Error('Valid phone required');
   }
 
-  const productIds = cartItems.map(item => item.id.toString());
-  const subtotal = cartItems.reduce((sum, item) => sum + (item.inStock ? item.price : 0), 0);
-  const total = subtotal.toFixed(2);
+  // ---- data from artshop ----
+  const payload = JSON.parse(localStorage.getItem('checkoutPayload'));
+  const { cart: cartItems, selectedCurrency: Currency, exchangeRates } = payload;
+
+  selectedCurrency = selectedCurrency.toLowerCase();
+  
+
+  // ---- USD subtotal (prices are stored in USD) ----
+  const subtotalUSD = cartItems.reduce((s, it) => s + +it.price, 0);
+
+  // ---- convert to selected currency ----
+  let total = subtotalUSD;
+  if (Currency !== 'usd' && exchangeRates.usd && exchangeRates[Currency]) {
+    const inUSD = subtotalUSD / exchangeRates.USD;
+    total = inUSD * exchangeRates[Currency];
+  }
+  total = Math.round(total * 100) / 100;   // 2-dp
 
   return {
-    email,
+    email, firstName, lastName, phoneNumber,
     Currency,
-    firstName,
-    lastName,
-    phoneNumber,
     cartItems,
-    productIds,
-    subtotal,
-    total
+    productIds: cartItems.map(i => i.id.toString()),
+    subtotalUSD: +subtotalUSD.toFixed(2),
+    total,                 
+    exchangeRates          
   };
 }
 
