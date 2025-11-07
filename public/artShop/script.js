@@ -179,7 +179,7 @@ function hideLoader() {
   document.getElementById("loader").style.display = "none";
 }
 async function fetchProducts() {
-  const response = await fetch("/api/dbs/fetchProduct", {
+  const response = await fetch("http://localhost:5555/api/dbs/fetchProduct", {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
@@ -438,6 +438,7 @@ function openModal(id) {
     if (e.target === modal) modal.remove();
   });
 
+ 
 }
 
 function renderProducts(productList) {
@@ -549,9 +550,10 @@ function proceedToCheckout() {
   const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
   if (!cartItems.length) return alert('Cart empty');
 
+  // Pass *only* what checkout needs
   const payload = {
-    selectedCurrency,
-    exchangeRates,          // <-- fresh rates from backend
+    selectedCurrency: currencySelect.value,
+    exchangeRates: exchangeRates,
     cart: cartItems
   };
   localStorage.setItem('checkoutPayload', JSON.stringify(payload));
