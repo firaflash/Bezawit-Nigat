@@ -1,7 +1,10 @@
 import { supabase } from "./supabaseclient.js";
 
 export const fetchProducts = async (req, res) => {
-  const { data, error } = await supabase.from("products").select("*");
+  const { data, error } = await supabase.from("products")
+  .select("*")
+  .order('id', { ascending: true });
+
 
   if (error || !data || data.length === 0) {
     return res.status(404).send("Error: No Product Available");
