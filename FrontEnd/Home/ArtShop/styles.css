@@ -308,6 +308,31 @@ color: #fff ;
 .nav-wrap { display: flex; }
 }
 
+/* Decorative image */
+.decorative-img-top {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  width: 300px;
+  height: 300px;
+  /* opacity: 0.3; */
+  pointer-events: none;
+  user-select: none;
+}
+
+.decorative-img-bottom {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  z-index: -1;
+  width: 300px;
+  height: 300px;
+  /* opacity: 0.3; */
+  pointer-events: none;
+  user-select: none;
+}
+
 
 /* Header and navbar styles are inherited from ../css/styles.css */
 /* Cart Icon - fixed top-right */
