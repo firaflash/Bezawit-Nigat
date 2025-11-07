@@ -37,6 +37,7 @@ function isToday(timestamp) {
 
 async function callApi(base = "USD") {
   try {
+    console.log("Fetching api call");
     // ---- 1. Try to load cached rates for today ----
     const savedData = JSON.parse(localStorage.getItem(EXCHANGE_STORAGE_KEY));
     if (savedData && isToday(savedData.date) && savedData.base === base) {
@@ -244,7 +245,7 @@ function updateCartUI(cart) {
   cart.forEach(item => {
     let displayPrice = item.price; // USD base
     if (currentCurrency !== "USD") {
-      displayPrice = convertCurrency(item.price, "USD", currentCurrency);
+      displayPrice = convertCurrency(item.price, "usd", currentCurrency.toLowerCase());
     }
 
     const li = document.createElement("li");
@@ -352,7 +353,7 @@ const updateCartTotal = () => {
   document.querySelectorAll(".cart-item-price").forEach(priceEl => {
     const priceUSD = parseFloat(priceEl.dataset.priceUsd); 
     if (!isNaN(priceUSD)) {
-      total += convertCurrency(priceUSD, "USD", currentCurrency); 
+      total += convertCurrency(item.price, "usd", currentCurrency.toLowerCase()); 
     }
   });
 
@@ -389,7 +390,7 @@ function openModal(id) {
     preload.src = url;
   });
 
-  const convertedNew = convertCurrency(productData.priceNew, baseCurrency, selectedCurrency);
+  const convertedNew = convertCurrency(item.price, "usd", currentCurrency.toLowerCase());
 
   const existingModal = document.getElementById("product-modal");
   if (existingModal) existingModal.remove();
@@ -442,14 +443,14 @@ function openModal(id) {
 }
 
 function renderProducts(productList) {
-  const baseCurrency = "USD"; // assume your product prices are stored in USD
+  const baseCurrency = "usd"; // assume your product prices are stored in USD
   const selectedCurrency = currencySelect.value;
 
   productContainer.innerHTML = "";
 
   productList.forEach(product => {
-    const convertedOld = convertCurrency(product.priceOld, baseCurrency, selectedCurrency);
-    const convertedNew = convertCurrency(product.priceNew, baseCurrency, selectedCurrency);
+    const convertedOld = convertCurrency(product.priceOld, baseCurrency, selectedCurrency.toLowerCase());
+    const convertedNew = convertCurrency(product.priceNew, baseCurrency, selectedCurrency.toLowerCase());
 
     const card = document.createElement("div");
     card.className = "card";
