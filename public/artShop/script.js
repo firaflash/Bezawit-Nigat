@@ -1,5 +1,3 @@
-import { supabase } from './config/supabaseClient.js';
-
 const productContainer = document.getElementById("product-container");
 const cartIcon = document.getElementById('cart-button');
 const cartList = document.querySelector('.cart-list');
@@ -440,7 +438,6 @@ function openModal(id) {
     if (e.target === modal) modal.remove();
   });
 
- 
 }
 
 function renderProducts(productList) {
