@@ -90,7 +90,7 @@ export const verifyPayment = async (req, res) => {
       // Retrieve stored order info for this transaction
       const orderInfo = pendingOrders.get(tx_ref);
 
-      if (orderInfo) {
+      
         // Prepare email template params
         const templateParams = {
           full_name: `${orderInfo.firstName} ${orderInfo.lastName}`,
@@ -126,9 +126,9 @@ export const verifyPayment = async (req, res) => {
 
         // (Later) Call sellProduct() to update DB
         // await sellProduct(orderInfo);
-      } else {
+      
         console.warn("⚠️ No order info found for tx_ref:", tx_ref);
-      }
+      
     } else {
       console.log("❌ Payment not successful:", data.data.status);
     }
