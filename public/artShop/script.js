@@ -520,7 +520,7 @@ function proceedToCheckout() {
   if (!cartItems.length) return alert('Cart empty');
 
   const payload = {
-    selectedCurrency: currencySelect.value,
+    selectedCurrency: currencySelect.value,  // Consistent naming
     exchangeRates: exchangeRates,
     cart: cartItems
   };

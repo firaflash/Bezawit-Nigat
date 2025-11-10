@@ -118,11 +118,11 @@ function prepareOrderData() {
   const payload = JSON.parse(localStorage.getItem('checkoutPayload'));
 
   // Destructure with the correct property name
-  const { cart: cartItems, selectedCurrency: Currency, exchangeRates } = payload;
+  const { cart: cartItems, selectedCurrency , exchangeRates } = payload;
 
   console.log(cartItems);
 
-  const selectedCurrencyLower = Currency.toLowerCase();
+  const selectedCurrencyLower = selectedCurrency.toLowerCase();
 
   console.log(selectedCurrency , " selected currency in lower case");
   
