@@ -185,7 +185,7 @@ function hideLoader() {
   document.getElementById("loader").style.display = "none";
 }
 async function fetchProducts() {
-  const response = await fetch("http://localhost:5555/api/dbs/fetchProduct", {
+  const response = await fetch("/api/dbs/fetchProduct", {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
