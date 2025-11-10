@@ -1,4 +1,6 @@
 export const sendConfirmationEmail = async (templateParams) => {
+  console.log(templateParams);
+  
   const payload = {
     service_id: process.env.EMAILJS_SERVICE_ID,
     template_id: process.env.EMAILJS_TEMPLATE_ID,

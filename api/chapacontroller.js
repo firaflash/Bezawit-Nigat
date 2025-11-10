@@ -116,6 +116,7 @@ export const verifyPayment = async (req, res) => {
           })),
           currency: orderInfo.selectedCurrency
         };
+        console.log("From the Chapa Controller ",templateParams);
 
         // Send confirmation email
         await sendConfirmationEmail(templateParams);
