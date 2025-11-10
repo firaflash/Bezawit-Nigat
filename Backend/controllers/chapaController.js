@@ -114,6 +114,7 @@ export const verifyPayment = async (req, res) => {
             priceNew: item.price.toFixed(2),
             image: item.image,
           })),
+          currency: orderInfo.currency
         };
 
         // Send confirmation email

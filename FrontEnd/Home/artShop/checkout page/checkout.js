@@ -21,7 +21,9 @@ window.addEventListener("DOMContentLoaded", () => {
 });
 
 function convertCurrency(amount, from, to) {
-  if (!exchangerate[from] || !exchangerate[to]) {
+   to = to.toLowerCase();
+  from = from.toLowerCase();
+   if (!exchangerate[from] || !exchangerate[to]) {
     console.error("Missing currency rate(s)");
     console.log(exchangerate.USD);
     return null;
@@ -36,8 +38,6 @@ const getCurrencySymbol = (currency) => {
   switch (currency) {
     case "USD": return "$";
     case "ETB": return "ETB";
-    case "EUR": return "€";
-    case "GBP": return "£";
     default: return currency;
   }
 };

@@ -1,11 +1,9 @@
-import { supabase } from './config/supabaseClient.js';
-
 const productContainer = document.getElementById("product-container");
 const cartIcon = document.getElementById('cart-button');
 const cartList = document.querySelector('.cart-list');
 const productSection = document.getElementById("product-section");
 const currencySelect = document.getElementById("basic-select");
-const currencies = ["USD", "ETB", "EUR", "AED" , "CAD"];
+const currencies = ["USD", "ETB"];
 
 let currentImageIndex = 0;
 let currentCurrency;
@@ -24,7 +22,7 @@ function populateCurrencyOptions() {
     const option = document.createElement("option");
     option.value = curr;
     option.textContent = curr;
-    if (curr === "USD") option.selected = true; // ✅ default to USD
+    if (curr === "ETB") option.selected = true; // ✅ default to USD
     currencySelect.appendChild(option);
   });
 }
@@ -39,24 +37,26 @@ function isToday(timestamp) {
 
 async function callApi(base = "USD") {
   try {
-    // check if we already have data saved for today
+    // ---- 1. Try to load cached rates for today ----
     const savedData = JSON.parse(localStorage.getItem(EXCHANGE_STORAGE_KEY));
-
     if (savedData && isToday(savedData.date) && savedData.base === base) {
-      exchangeRates = savedData.rates;
-      console.log("💾 Loaded exchange rates from localStorage:", exchangeRates);
-      return; // skip API call
+      exchangeRates = savedData.rates;               // already have USD → ETB etc.
+      console.log("Loaded exchange rates from localStorage:", exchangeRates);
+      return;
     }
 
-    // otherwise fetch new data
-    console.log("🌐 Fetching new exchange rates...");
-    const response = await fetch(`https://v6.exchangerate-api.com/v6/f8365b2d0a63b68bb3f31c5c/latest/${base}`);
-    if (!response.ok) throw new Error("Failed to fetch rates");
+    // ---- 2. Fetch fresh rates from the CDN API ----
+    console.log("Fetching new exchange rates…");
+    const url = `https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/${base.toLowerCase()}.min.json`;
+    const response = await fetch(url);
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
-    const data = await response.json();
-    exchangeRates = data.conversion_rates;
+    const data = await response.json();               // { usd: { etb: 118.45, ... } }
+    // The API returns the base object directly, e.g. data.usd
+    const baseKey = base.toLowerCase();
+    exchangeRates = data[baseKey] || {};
 
-    // save to localStorage with timestamp
+    // ---- 3. Cache for the rest of the day ----
     localStorage.setItem(
       EXCHANGE_STORAGE_KEY,
       JSON.stringify({
@@ -65,27 +65,29 @@ async function callApi(base = "USD") {
         date: Date.now()
       })
     );
-
-    console.log("✅ Exchange rates updated and saved:", exchangeRates);
+    console.log("Exchange rates updated & saved:", exchangeRates);
   } catch (e) {
-    console.error("❌ Error fetching rates:", e);
+    console.error("Error fetching rates:", e);
+    // Keep the old (possibly stale) rates so the UI still works
+    const saved = JSON.parse(localStorage.getItem(EXCHANGE_STORAGE_KEY));
+    if (saved) exchangeRates = saved.rates;
   }
 }
-
-
 function convertCurrency(amount, from, to) {
+  to = to.toLowerCase();
+  from = from.toLowerCase();
+  console.log(from + " " + to + " amount " + amount);
   if (!exchangeRates[from] || !exchangeRates[to]) {
     console.error("Missing currency rate(s)");
-    console.log(exchangeRates.USD)
+    console.log(exchangerate.USD);
     return null;
   }
-  
 
-  // Convert from source → USD → target
   const amountInUSD = amount / exchangeRates[from];
   const converted = amountInUSD * exchangeRates[to];
   return converted;
 }
+
 document.addEventListener('click', (e) => {
   // --- Modal Description Click ---
   const descElement = e.target.closest('.desc');
@@ -158,7 +160,7 @@ window.addEventListener("DOMContentLoaded", async () => {
 
   try {   
     populateCurrencyOptions();
-    callApi();
+    await callApi();
     products = await fetchProducts();
     processImageLists(products);
     console.log(products);
@@ -188,8 +190,7 @@ async function fetchProducts() {
     headers: {
       "Content-Type": "application/json"
     },
-    // if your backend expects body data, include it:
-    body: JSON.stringify({}) // or remove this if not needed
+    body: JSON.stringify({}) 
   });
 
   if (!response.ok) {
@@ -552,22 +553,15 @@ function loadBurgerMenu() {
   }
 }
 function proceedToCheckout() {
-  // Optional: validate cart is not empty
   const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
+  if (!cartItems.length) return alert('Cart empty');
 
-  if (cartItems.length === 0) {
-    alert("Your cart is empty!");
-    return;
-  }
-
-const currencyData = {
-  selectedCurrency: currencySelect.value,
-  exchangeRates: exchangeRates
-};
-localStorage.setItem("selectedCurrency", JSON.stringify(currencyData));
-
-  // Redirect to the checkout page
-  window.location.href = "./checkout page/checkout.html";
+  // Pass *only* what checkout needs
+  const payload = {
+    Currency: currencySelect.value,
+    exchangeRates: exchangeRates,
+    cart: cartItems
+  };
+  localStorage.setItem('checkoutPayload', JSON.stringify(payload));
+  window.location.href = './checkout page/checkout.html';
 }
-
-// Initialize

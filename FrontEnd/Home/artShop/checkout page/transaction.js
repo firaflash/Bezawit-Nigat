@@ -1,24 +1,10 @@
-import emailjs from 'https://cdn.skypack.dev/@emailjs/browser';
-import { supabase } from '../config/supabaseClient.js';
 
-// Configuration
-const config = {
-  emailServiceID: 'service_x8sh3ir',
-  emailTemplateID: 'template_loov3b9',
-  storageBucket: 'receipts',
-};
-
-// DOM Elements
 const elements = {
   form: document.getElementById('checkout-form'),
   btnText: document.getElementById('btn-text'),
   btnSpinner: document.getElementById('btn-spinner')
 };
 
-// Initialize EmailJS
-emailjs.init("6ZBoLbxtk8Fcy_CNQ");
-
-// Main form handler
 elements.form.addEventListener('submit', handleBankTransferVerification);
 
 async function handleBankTransferVerification(e) {
@@ -100,73 +86,48 @@ function validateForm() {
   }
   return true;
 }
-
 function prepareOrderData() {
-  const email = document.getElementById('buyer-email').value.trim();
-  const currencyData = JSON.parse(localStorage.getItem("selectedCurrency")) || { selectedCurrency: "USD", exchangeRates: {} };
-  const Currency = currencyData.selectedCurrency;
-  const firstName = document.getElementById('first-name').value.trim();
-  const lastName = document.getElementById('last-name').value.trim();
-  const phoneNumber = document.getElementById('phone').value.trim();
-  const cartItems = JSON.parse(localStorage.getItem("cart")) || [];
+  // ---- user fields ----
+  const email      = document.getElementById('buyer-email').value.trim();
+  const firstName  = document.getElementById('first-name').value.trim();
+  const lastName   = document.getElementById('last-name').value.trim();
+  const phoneNumber= document.getElementById('phone').value.trim();
 
-  // ✅ Phone validation section
+  // ---- phone validation (unchanged) ----
   const phoneRegex = /^(?:\+\d{1,3}[-.\s]?)?(?:\(\d{1,4}\)[\s.-]?)?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}$/;
-  const cleanDigits = phoneNumber.replace(/[^\d+]/g, '').replace(/^\+/, '');
-  if (!phoneRegex.test(phoneNumber) || cleanDigits.length < 10) {
-    throw new Error('Please enter a valid phone number.');
+  const clean = phoneNumber.replace(/[^\d+]/g, '').replace(/^\+/, '');
+  if (!phoneRegex.test(phoneNumber) || clean.length < 10) {
+    throw new Error('Valid phone required');
   }
 
-  // ✅ Build product and total data
-  const productIds = cartItems.map(item => item.id.toString());
-  const subtotal = cartItems.reduce((sum, item) => sum + (item.inStock ? item.price : 0), 0);
-  const total = subtotal.toFixed(2);
+  // ---- data from artshop ----
+const payload = JSON.parse(localStorage.getItem('checkoutPayload'));
+
+// Destructure with the correct property name
+const { cart: cartItems, Currency: selectedCurrency, exchangeRates } = payload;
+
+const selectedCurrencyLower = selectedCurrency.toLowerCase();
+
+  // ---- USD subtotal (prices are stored in USD) ----
+  const subtotalUSD = cartItems.reduce((s, it) => s + +it.price, 0);
+
+  // ---- convert to selected currency ----
+  let total = subtotalUSD;
+  if (selectedCurrencyLower !== 'usd' && exchangeRates.usd && exchangeRates[selectedCurrencyLower]) {
+    const inUSD = subtotalUSD / exchangeRates.USD;
+    total = inUSD * exchangeRates[selectedCurrencyLower];
+  }
+  total = Math.round(total * 100) / 100;   // 2-dp
 
   return {
-    email,
-    Currency,
-    firstName,
-    lastName,
-    phoneNumber,
+    email, firstName, lastName, phoneNumber,
+    selectedCurrency,
     cartItems,
-    productIds,
-    subtotal,
-    total
+    productIds: cartItems.map(i => i.id.toString()),
+    subtotalUSD: +subtotalUSD.toFixed(2),
+    total,                 
+    exchangeRates          
   };
-}
-
-
-async function sendConfirmationEmail(orderData) {
-const templateParams = {
-    website_url: "https://bezawit-nigat.vercel.app",
-    buyer_name: orderData.fullName,
-    buyer_email: orderData.email,
-    order_number: `ORD-${Date.now().toString().slice(-6)}`, // Generate a simple order number
-    order_date: new Date().toLocaleDateString('en-US', { 
-      year: 'numeric', 
-      month: 'long', 
-      day: 'numeric' 
-    }),
-    transaction_id: 'TX-NEW_ID',
-    receipt_url: "https://bezawit-nigat.vercel.app/ArtShop/artPage.html",
-    products: orderData.cartItems.map(item => ({
-      title: item.title,
-      price: item.price.toFixed(2)
-    })),
-    order_total: (parseFloat(orderData.total) || 0).toFixed(2),
-    company_address: "123 Business Rd, City, Country" // Add your address
-  };
-  try {
-    const response = await emailjs.send(
-      config.emailServiceID, 
-      config.emailTemplateID, 
-      templateParams
-    );
-    console.log("Email sent:", response);
-  } catch (error) {
-    console.error("Email failed to send:", error);
-    // Consider whether to throw or continue without email
-  }
 }
 
 function handleSuccess() {
