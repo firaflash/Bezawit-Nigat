@@ -3,31 +3,31 @@ document.addEventListener('DOMContentLoaded', () => {
   // Carousel images array with descriptions
   const carouselItems = [
     {
-      image: 'img/cosmo.jpg',
+      image: 'https://res.cloudinary.com/dvru1sz8x/image/upload/v1762767084/cosmo_nuklnr.webp',
       title: 'Crossing Realms: A Journey Between Worlds',
       subtitle: 'Symbolic Painting',
       description: 'The painting depicts a man emerging from a cosmic portal, transitioning from a dark, starry sky into a bright, golden field of flowers. His body appears to stretch between two contrasting worlds—one of vast space, the other of earthly beauty—symbolizing a journey between the unknown and the familiar. The artwork highlights the tension and connection between the cosmos and human experience.'
     },
     {
-      image: 'img/bez1.jpg',
+      image: 'https://res.cloudinary.com/dvru1sz8x/image/upload/v1762768143/bez1_ewsm6q.webp',
       title: 'Burden of the Mind: The Cracking Point',
       subtitle: 'Conceptual Art',
       description: 'In a realm where thoughts manifest as tangible matter, a man burdened by the weight of his own mind finally shatters. The egg, a symbol of potential and creation, cracks open, not birthing life, but drowning him in the very ideas he failed to control. As the golden yolk engulfs him, he kneels—caught between transformation and defeat—his identity dissolving into the vast unknown. Is this the death of the self or the messy birth of something new? Only time will tell.'
     },
     {
-      image: 'img/bez2.jpg',
+      image: 'https://res.cloudinary.com/dvru1sz8x/image/upload/v1762768141/bez2_hx5pxr.webp',
       title: 'Luminous Legacy: The Cycle of Light and Wisdom',
       subtitle: 'Ancestral Tribute',
       description: 'The hands, emerging from different directions and casting golden dust, symbolize the diverse influences and blessings that nourish the young girl in the center. This golden dust represents wisdom, knowledge, and love being passed down through generations, embodying the essence of ancestral guidance and community support. The girl\'s candle represents hope and potential, a light passed down through generations. And the vibrant background of swirling reds and greens reflects the struggles and growth inherent in life\'s journey. Together, these elements weave a tale of continuity, community, and the enduring power of legacy and guidance.'
     },
     {
-      image: 'img/bez3.jpg',
+      image: 'https://res.cloudinary.com/dvru1sz8x/image/upload/v1762768145/bez3_rvkqnq.webp',
       title: 'Eclipse of the Soul',
       subtitle: 'Transcendental Art',
       description: 'Moment of transcendence where the individual spirit merges with the cosmic forces, symbolizing a profound connection between the physical and ethereal realms. The arching figure, bathed in radiant hues, reflects the soul\'s journey through enlightenment and the dissolution of boundaries between self and universe. The journey of self-discovery and the transcendental nature of human existence. It reflects on how individuals can transform through their interactions with the world, blending their essence with the broader tapestry of life.'
     },
     {
-      image: 'img/bez4.jpg',
+      image: 'https://res.cloudinary.com/dvru1sz8x/image/upload/v1762768143/bez5_naol52.webp',
       title: 'Rebirth of the Cosmic Dreamer',
       subtitle: 'Visionary Art',
       description: 'A woman emerging from a cracked shell, symbolizing rebirth and new beginnings. She reaches towards a glowing orb in the sky, representing her aspirations and dreams. The vibrant, star-filled background signifies the boundless possibilities and the universe\'s infinite potential. The golden thread she holds connects her to the orb, illustrating the power of ambition and hope that guides her journey. This artwork speaks to the transformative power of breaking free from one\'s constraints and reaching for the stars, embracing the beauty and wonder of the unknown.'
