@@ -30,8 +30,8 @@ export const proceedPayment = async (req, res) => {
       last_name: orderInfo.lastName,
       phone_number: orderInfo.phoneNumber,
       tx_ref: txRef,
-      callback_url: "https://hungry-doodles-vanish.loca.lt/api/chapa/Verify",
-      return_url: "http://localhost:5555/artShop/index.html",
+      callback_url: "https://bezawit-nigat.vercel.app/api/chapa/Verify",
+      return_url: "https://bezawit-nigat.vercel.app/artShop/index.html",
       customization: {
         title: "TimeLess Emotion",
         description: "Art Purchase",
