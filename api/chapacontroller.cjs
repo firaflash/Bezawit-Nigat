@@ -14,7 +14,7 @@ export const proceedPayment = async (req, res) => {
   try {
     const txRef = `TIMLSS-${Date.now()}-${Math.floor(Math.random() * 10000)}`;
 
-    console.log("Received orderInfo:", req.body);
+    // console.log("Received orderInfo:", req.body);
 
     const orderInfo = req.body.orderInfo;
     console.log(orderInfo.cartItems);
