@@ -397,7 +397,7 @@ transition-delay: .55s;
 /*** Header ***/
 #home {
   margin-bottom: 6rem;
-  background: url(../img/bg-header.png) left top no-repeat;
+  background: url(https://res.cloudinary.com/dvru1sz8x/image/upload/v1762766069/bg-header_ht8klq.webp) left top no-repeat;
 }
 
 .typed-cursor {
