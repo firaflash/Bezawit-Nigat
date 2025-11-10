@@ -92,32 +92,6 @@ $(function(){
 	siteMenuClone();
 
 	var owlPlugin = function() {
-		if ( $('.owl-single').length > 0 ) {
-			var owl = $('.owl-single').owlCarousel({
-				loop: true,
-				autoHeight: true,
-				margin: 0,
-				autoplay: true,
-				smartSpeed: 1000,
-				items: 1,
-				nav: true,
-				navText: ['<span class="icon-keyboard_backspace"></span>','<span class="icon-keyboard_backspace"></span>']
-			});
-
-			owl.on('initialized.owl.carousel', function() {
-				owl.trigger('refresh.owl.carousel');
-			});
-
-			$('.custom-owl-next').click(function(e) {
-				e.preventDefault();
-				owl.trigger('next.owl.carousel');
-			})
-			$('.custom-owl-prev').click(function(e) {
-				e.preventDefault();
-				owl.trigger('prev.owl.carousel');
-			})
-		}
-
 		if ( $('.js-slider-heading').length > 0 ) {
 			var owl = $('.js-slider-heading').owlCarousel({
 				loop: true,
@@ -126,11 +100,8 @@ $(function(){
 				autoplay: true,
 				smartSpeed: 1000,
 				items: 1,
-				nav: true,
-				navText: ['<span class="icon-keyboard_backspace"></span>','<span class="icon-keyboard_backspace"></span>'],
-				onTranslated: function(event) {
-					
-				}
+                nav: true,
+                navText: ['<span class="icon-keyboard_backspace"></span>','<span class="icon-keyboard_backspace"></span>']
 			});
 
 			owl.on('initialized.owl.carousel', function(event) {
@@ -147,154 +118,9 @@ $(function(){
 				owl.trigger('prev.owl.carousel');
 			})
 		}
-
-
-		if ( $('.owl-logos').length > 0 ) {
-			var owl3 = $('.owl-logos').owlCarousel({
-				loop: true,
-				autoHeight: true,
-				margin: 10,
-				autoplay: true,
-				smartSpeed: 700,
-				items: 4,
-				stagePadding: 0,
-				nav: true,
-				dots: true,
-				navText: ['<span class="icon-keyboard_backspace"></span>','<span class="icon-keyboard_backspace"></span>'],
-				responsive:{
-					0:{
-						items:1
-					},
-					600:{
-						items:1
-					},
-					800: {
-						items:2
-					},
-					1000:{
-						items:3
-					},
-					1100:{
-						items:5
-					}
-				}
-			});
-		}
-		
-		if ( $('.owl-3-slider').length > 0 ) {
-			var owl3 = $('.owl-3-slider').owlCarousel({
-				loop: true,
-				autoHeight: true,
-				margin: 10,
-				autoplay: true,
-				smartSpeed: 700,
-				items: 4,
-				stagePadding: 0,
-				nav: true,
-				dots: true,
-				navText: ['<span class="icon-keyboard_backspace"></span>','<span class="icon-keyboard_backspace"></span>'],
-				responsive:{
-					0:{
-						items:1
-					},
-					600:{
-						items:1
-					},
-					800: {
-						items:2
-					},
-					1000:{
-						items:2
-					},
-					1100:{
-						items:3
-					}
-				}
-			});
-		}
-		$('.js-custom-next-v2').click(function(e) {
-			e.preventDefault();
-			owl3.trigger('next.owl.carousel');
-		})
-		$('.js-custom-prev-v2').click(function(e) {
-			e.preventDefault();
-			owl3.trigger('prev.owl.carousel');
-		})
 	}
 	owlPlugin();
 
-	var counter = function() {
-		
-		$('.count-numbers').waypoint( function( direction ) {
-
-			if( direction === 'down' && !$(this.element).hasClass('ut-animated') ) {
-
-				var comma_separator_number_step = $.animateNumber.numberStepFactories.separator(',')
-				$('.counter > span').each(function(){
-					var $this = $(this),
-					num = $this.data('number');
-					$this.animateNumber(
-					{
-						number: num,
-						numberStep: comma_separator_number_step
-					}, 10000,
-					function() {
-			      // $('.counter-caption').addClass('active')
-			  }
-			  );
-				});
-				
-			}
-
-		} , { offset: '95%' } );
-
-	}
-	counter();
-
-	$('.js-search-toggle').on('click', function() {
-		$('.search-wrap').toggleClass('active');
-
-		setTimeout(function() {
-			$('#s').focus();
-		}, 400);
-	})
-
-	$(document).mouseup(function(e) {
-		var container = $(".search-wrap form");
-		if (!container.is(e.target) && container.has(e.target).length === 0) {
-			if ( $('.search-wrap').hasClass('active') ) {
-				$('.search-wrap').removeClass('active');
-			}
-		}
-	}); 
-
-	var siteStellar = function() {
-		$(window).stellar({
-			responsive: false,
-			parallaxBackgrounds: true,
-			parallaxElements: true,
-			horizontalScrolling: false,
-			hideDistantElements: false,
-			scrollProperty: 'scroll'
-		});
-	};
-	siteStellar();
-
-	var pricing = function() {
-		$('.js-period-toggle').on('click', function(e) {
-			var $this = $(this),
-			pricingItem = $('.pricing-item');
-			if ( $('.period-toggle').hasClass('active') ) {
-				$this.removeClass('active');
-				pricingItem.removeClass('yearly');
-			} else {
-				$this.addClass('active');
-				pricingItem.addClass('yearly');
-			}
-			e.preventDefault();
-		})
-	}
-	pricing();
 
 })
 

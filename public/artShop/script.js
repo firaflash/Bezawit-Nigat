@@ -37,7 +37,6 @@ function isToday(timestamp) {
 
 async function callApi(base = "USD") {
   try {
-    console.log("Fetching api call");
     // ---- 1. Try to load cached rates for today ----
     const savedData = JSON.parse(localStorage.getItem(EXCHANGE_STORAGE_KEY));
     if (savedData && isToday(savedData.date) && savedData.base === base) {
@@ -74,15 +73,21 @@ async function callApi(base = "USD") {
     if (saved) exchangeRates = saved.rates;
   }
 }
-
 function convertCurrency(amount, from, to) {
-  if (!exchangeRates[from] || !exchangeRates[to]) return null;
+  to = to.toLowerCase();
+  from = from.toLowerCase();
+  console.log(from + " " + to + " amount " + amount);
+  if (!exchangeRates[from] || !exchangeRates[to]) {
+    console.error("Missing currency rate(s)");
+    console.log(exchangerate.USD);
+    return null;
+  }
 
   const amountInUSD = amount / exchangeRates[from];
   const converted = amountInUSD * exchangeRates[to];
-
-  return Math.round(converted * 100) / 100;
+  return converted;
 }
+
 document.addEventListener('click', (e) => {
   // --- Modal Description Click ---
   const descElement = e.target.closest('.desc');
@@ -168,7 +173,6 @@ window.addEventListener("DOMContentLoaded", async () => {
     console.error(error);
   } finally {
     hideLoader();
-    loadBurgerMenu(); // Optional, depending on your setup
   }
 });
 function showLoader() {
@@ -180,7 +184,7 @@ function hideLoader() {
   document.getElementById("loader").style.display = "none";
 }
 async function fetchProducts() {
-  const response = await fetch("/api/dbs/fetchProduct", {
+  const response = await fetch("http://localhost:5555/api/dbs/fetchProduct", {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
@@ -245,7 +249,7 @@ function updateCartUI(cart) {
   cart.forEach(item => {
     let displayPrice = item.price; // USD base
     if (currentCurrency !== "USD") {
-      displayPrice = convertCurrency(item.price, "usd", currentCurrency.toLowerCase());
+      displayPrice = convertCurrency(item.price, "USD", currentCurrency);
     }
 
     const li = document.createElement("li");
@@ -353,7 +357,7 @@ const updateCartTotal = () => {
   document.querySelectorAll(".cart-item-price").forEach(priceEl => {
     const priceUSD = parseFloat(priceEl.dataset.priceUsd); 
     if (!isNaN(priceUSD)) {
-      total += convertCurrency(item.price, "usd", currentCurrency.toLowerCase()); 
+      total += convertCurrency(priceUSD, "USD", currentCurrency); 
     }
   });
 
@@ -390,7 +394,7 @@ function openModal(id) {
     preload.src = url;
   });
 
-  const convertedNew = convertCurrency(item.price, "usd", currentCurrency.toLowerCase());
+  const convertedNew = convertCurrency(productData.priceNew, baseCurrency, selectedCurrency);
 
   const existingModal = document.getElementById("product-modal");
   if (existingModal) existingModal.remove();
@@ -443,14 +447,14 @@ function openModal(id) {
 }
 
 function renderProducts(productList) {
-  const baseCurrency = "usd"; // assume your product prices are stored in USD
+  const baseCurrency = "USD"; // assume your product prices are stored in USD
   const selectedCurrency = currencySelect.value;
 
   productContainer.innerHTML = "";
 
   productList.forEach(product => {
-    const convertedOld = convertCurrency(product.priceOld, baseCurrency, selectedCurrency.toLowerCase());
-    const convertedNew = convertCurrency(product.priceNew, baseCurrency, selectedCurrency.toLowerCase());
+    const convertedOld = convertCurrency(product.priceOld, baseCurrency, selectedCurrency);
+    const convertedNew = convertCurrency(product.priceNew, baseCurrency, selectedCurrency);
 
     const card = document.createElement("div");
     card.className = "card";
@@ -510,53 +514,96 @@ window.addEventListener('click', () => {
   cartList.classList.remove("open");
 });
 
-function loadBurgerMenu() {
-  const burgerMenu = document.querySelector('.burger-menu');
-  const nav = document.querySelector('nav');
-  const body = document.body;
-  const html = document.documentElement;
-  const socialLinks = document.querySelector('.social-links');
-
-  if (burgerMenu && nav) {
-    burgerMenu.addEventListener('click', (e) => {
-      e.stopPropagation();
-      nav.classList.toggle('active');
-      burgerMenu.classList.toggle('active');
-      
-      if (socialLinks) {
-        if (nav.classList.contains('active')) {
-          setTimeout(() => {
-            if (nav.classList.contains('active')) {
-              socialLinks.classList.add('active');
-            }
-          }, 350);
-        } else {
-          socialLinks.classList.remove('active');
-        }
-      }
-      
-      if (nav.classList.contains('active')) {
-        body.classList.add('no-scroll');
-        html.classList.add('no-scroll');
-      } else {
-        body.classList.remove('no-scroll');
-        html.classList.remove('no-scroll');
-      }
-
-      burgerMenu.setAttribute('aria-expanded', nav.classList.contains('active'));
-    });
-  }
-}
 function proceedToCheckout() {
   const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
   if (!cartItems.length) return alert('Cart empty');
 
   // Pass *only* what checkout needs
   const payload = {
-    selectedCurrency: currencySelect.value,
+    Currency: currencySelect.value,
     exchangeRates: exchangeRates,
     cart: cartItems
   };
   localStorage.setItem('checkoutPayload', JSON.stringify(payload));
   window.location.href = './checkout page/checkout.html';
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+
+
+  // Hide spinner after full page load
+  window.addEventListener('load', function () {
+    var spinnerEl = document.getElementById('spinner');
+    if (spinnerEl) {
+      setTimeout(function () {
+        spinnerEl.classList.remove('show');
+      }, 1);
+    }
+  });
+  
+  // Splash Nav Toggle and A11y
+  const splashNav = document.querySelector('#nav');
+  const splashMenu = document.querySelector('#menu');
+  const splashToggle = document.querySelector('.nav__toggle');
+  let splashOpen = false;
+
+  if (splashNav && splashMenu && splashToggle) {
+    splashToggle.addEventListener('click', (e) => {
+      e.preventDefault();
+      // Open
+      if (!splashOpen) {
+        splashOpen = true;
+        splashToggle.setAttribute('aria-expanded', 'true');
+        splashNav.classList.add('nav--open');
+        // Reveal the list after splash expands (~500ms)
+        setTimeout(() => {
+          splashMenu.hidden = false;
+        }, 500);
+      } else {
+        // Close
+        splashOpen = false;
+        splashToggle.setAttribute('aria-expanded', 'false');
+        splashMenu.hidden = true;
+        splashNav.classList.remove('nav--open');
+      }
+    });
+
+    // Trap Tab inside menu when open
+    splashNav.addEventListener('keydown', (e) => {
+      if (!splashOpen || e.ctrlKey || e.metaKey || e.altKey) return;
+      const menuLinks = splashMenu.querySelectorAll('.nav__link');
+      if (!menuLinks.length) return;
+      if (e.key === 'Tab' || e.keyCode === 9) {
+        if (e.shiftKey) {
+          if (document.activeElement === menuLinks[0]) {
+            splashToggle.focus();
+            e.preventDefault();
+          }
+        } else if (document.activeElement === splashToggle) {
+          menuLinks[0].focus();
+          e.preventDefault();
+        }
+      }
+    });
+  }
+  
+  // Back To Top behavior
+  const backToTopBtn = document.querySelector('.back-to-top');
+  if (backToTopBtn) {
+    const toggleBackToTop = () => {
+      if (window.scrollY > 300) {
+        backToTopBtn.classList.add('show');
+      } else {
+        backToTopBtn.classList.remove('show');
+      }
+    };
+
+    window.addEventListener('scroll', toggleBackToTop, { passive: true });
+    toggleBackToTop();
+
+    backToTopBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  }
+});
