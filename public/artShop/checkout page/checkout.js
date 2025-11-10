@@ -1,172 +1,208 @@
-const cartItems = JSON.parse(localStorage.getItem("cart")) || [];
-const checkoutTable = document.getElementById("cart-items");
-let subtotal = 0;
-let exchangerate = {};
-let selectedCurrency;
+// checkout.js – TimeLess Emotion (FINAL VERSION – NO CONFLICTS)
+let exchangeRates = {};
+let selectedCurrency = "USD";
+let cartItems = [];
 
-window.addEventListener("DOMContentLoaded", () => {
-  console.log("load window");
-  const cartItems = JSON.parse(localStorage.getItem("cart")) || [];
-  const currencyData = JSON.parse(localStorage.getItem("selectedCurrency")) || { selectedCurrency: "USD", exchangeRates: {} };
-
-  selectedCurrency = currencyData.selectedCurrency;
-  exchangerate = currencyData.exchangeRates;
-
-  console.log("🪙 Checkout Currency:", selectedCurrency);
-  if (cartItems) {
-    console.log(cartItems);
-    console.log(cartItems[0].price);
-  }
-  updateCheckoutUI(cartItems, selectedCurrency);
-});
-
-function convertCurrency(amount, from, to) {
-   to = to.toLowerCase();
-  from = from.toLowerCase();
-   if (!exchangerate[from] || !exchangerate[to]) {
-    console.error("Missing currency rate(s)");
-    console.log(exchangerate.USD);
-    return null;
-  }
-
-  const amountInUSD = amount / exchangerate[from];
-  const converted = amountInUSD * exchangerate[to];
-  return converted;
-}
-
-const getCurrencySymbol = (currency) => {
-  switch (currency) {
-    case "USD": return "$";
-    case "ETB": return "ETB";
-    default: return currency;
-  }
+const elements = {
+  form: null,
+  btnText: null,
+  btnSpinner: null
 };
 
-function updateCheckoutUI(cartItems, selectedCurrency) {
-  const checkoutTable = document.getElementById("cart-items");
-  checkoutTable.innerHTML = "";
-  let subtotal = 0;
+window.addEventListener("DOMContentLoaded", () => {
+  console.log("Checkout page loaded – DOM ready");
 
-  const symbol = getCurrencySymbol(selectedCurrency);
+  // Safely get DOM elements
+  elements.form = document.getElementById('checkout-form');
+  elements.btnText = document.getElementById('btn-text');
+  elements.btnSpinner = document.getElementById('btn-spinner');
+
+  if (!elements.form) {
+    console.error("Form not found!");
+    alert("Page error. Please refresh.");
+    return;
+  }
+
+  // READ ONLY FROM checkoutPayload (your new system)
+  let payload = {};
+  try {
+    const raw = localStorage.getItem('checkoutPayload');
+    if (!raw) throw new Error("No data");
+    payload = JSON.parse(raw);
+    console.log("Payload loaded:", payload);
+  } catch (err) {
+    alert("Session expired. Please go back to shop.");
+    window.location.href = "../index.html";
+    return;
+  }
+
+  cartItems = payload.cartItems || [];
+  selectedCurrency = payload.selectedCurrency || "USD";
+  exchangeRates = payload.exchangeRates || {};
+
+  if (!cartItems.length) {
+    alert("Your cart is empty!");
+    window.location.href = "../index.html";
+    return;
+  }
+
+  console.log(`Found ${cartItems.length} items`);
+
+  // Render UI
+  updateCheckoutUI();
+
+  // Attach form submit
+  elements.form.addEventListener('submit', handlePayment);
+});
+
+// Currency conversion
+function convertCurrency(amount, from = "usd", to = selectedCurrency.toLowerCase(), rates = exchangeRates) {
+  from = from.toLowerCase();
+  to = to.toLowerCase();
+  if (!rates[from] || !rates[to]) return amount;
+  return (amount / rates[from]) * rates[to];
+}
+
+function getSymbol(currency) {
+  return currency === "USD" ? "$" : "ETB";
+}
+
+// UI RENDERING – CLEAN & NO CONFLICT
+function updateCheckoutUI() {
+  const container = document.getElementById("cart-items");
+  const totalEl = document.getElementById("total-amount");
+
+  if (!container || !totalEl) {
+    console.error("cart-items or total-amount missing in HTML!");
+    return;
+  }
+
+  container.innerHTML = "";
+  let subtotal = 0;
+  const symbol = getSymbol(selectedCurrency);
 
   cartItems.forEach(item => {
-    if (!item.inStock) return;
-    console.log("Print price");
-    const prices = item.price;
-    console.log(prices);
-    const converted = convertCurrency(prices, "USD", selectedCurrency);
+    // Only skip if EXPLICITLY out of stock
+    if (item.inStock === false) return;
 
-    const row = document.createElement("li");
-    row.innerHTML = `
-      <img src="${item.image}" alt="Artwork Thumbnail" class="cart-item-img">
+    const price = convertCurrency(item.price, "usd", selectedCurrency.toLowerCase()) || item.price;
+    subtotal += price;
+
+    const li = document.createElement("li");
+    li.innerHTML = `
+      <img src="${item.image}" alt="${item.title}" class="cart-item-img">
       <div class="cart-item-info">
         <div class="cart-item-title">${item.title}</div>
-        <div class="cart-item-price">${symbol} ${converted.toFixed(2)}</div>
+        <div class="cart-item-price">${symbol} ${price.toFixed(2)}</div>
       </div>
-      <button class="cart-item-remove" onclick="removeItem(this)">✖</button>
+      <button class="cart-item-remove">X</button>
     `;
-    checkoutTable.appendChild(row);
-
-    subtotal += converted;
+    container.appendChild(li);
   });
 
-  document.getElementById("total-amount").textContent = `${symbol} ${subtotal.toFixed(2)}`;
+  totalEl.textContent = `${symbol} ${subtotal.toFixed(2)}`;
+  console.log(`RENDERED: ${symbol} ${subtotal.toFixed(2)}`);
 }
 
-function handlePaymentMethodChange() {
-  document.querySelectorAll('.payment-details').forEach(el => el.style.display = 'none');
-  document.getElementById('pickup-warning').style.display = 'none';
-  document.getElementById('pickup-info').style.display = 'none';
-
-  if (this.value === 'bank-transfer') {
-    document.getElementById('bank-details').style.display = 'block';
-    showPersonalInfo(true);
-  } else if (this.value === 'pickup') {
-    document.getElementById('pickup-warning').style.display = 'block';
-    document.getElementById('pickup-info').style.display = 'block';
-    showPersonalInfo(false);
-  }
-}
-
-document.querySelectorAll('input[name="payment-method"]').forEach(radio => {
-  radio.addEventListener('change', handlePaymentMethodChange);
-});
-
-function showPersonalInfo(show) {
-  const personalElements = document.querySelectorAll(
-    '#personal-info, .form-group, .pay-btn, .name-fields'
-  );
-
-  personalElements.forEach(el => {
-    if (el.id !== 'total' && el.id !== 'btn-spinner') {
-      el.style.display = show ? 'block' : 'none';
-    }
-  });
-}
-
-function copyToClipboard(text, successElement) {
-  navigator.clipboard.writeText(text).then(() => {
-    const msg = document.getElementById(successElement);
-    msg.classList.add("show");
-
-    setTimeout(() => {
-      msg.classList.remove("show");
-    }, 1500);
-  }).catch(err => {
-    alert("Failed to copy.");
-  });
-}
-
-function copyEmail(email) {
-  copyToClipboard(email, "copied-message");
-}
-
-document.getElementById("copy-account-btn").addEventListener("click", function() {
-  const accountNumber = document.getElementById("copy-account").textContent;
-  copyToClipboard(accountNumber, "copy-status");
-});
-
-document.getElementById("cart-items").addEventListener("click", (e) => {
+// REMOVE ITEM
+document.getElementById("cart-items")?.addEventListener("click", (e) => {
   if (e.target.classList.contains("cart-item-remove")) {
-    const btn = e.target;
-    const item = btn.closest("li");
-    const title = item.querySelector(".cart-item-title").textContent;
+    const li = e.target.closest("li");
+    const title = li.querySelector(".cart-item-title").textContent;
 
-    let cartItems = JSON.parse(localStorage.getItem("cart")) || [];
     cartItems = cartItems.filter(i => i.title !== title);
-    localStorage.setItem("cart", JSON.stringify(cartItems));
 
-    item.remove();
-    updateTotals();
+    // Update payload
+    const payload = JSON.parse(localStorage.getItem("checkoutPayload"));
+    payload.cartItems = cartItems;
+    localStorage.setItem("checkoutPayload", JSON.stringify(payload));
+
+    li.remove();
+    updateCheckoutUI();
+
+    if (cartItems.length === 0) {
+      alert("Cart is empty!");
+      window.location.href = "../index.html";
+    }
   }
 });
 
-function updateTotals() {
-  const cartItems = JSON.parse(localStorage.getItem("cart")) || [];
-  const selectedCurrency = localStorage.getItem("selectedCurrency") || "USD";
-  const symbol = getCurrencySymbol(selectedCurrency);
-  let subtotal = 0;
+// PAYMENT HANDLER
+async function handlePayment(e) {
+  e.preventDefault();
+  setLoadingState(true);
 
-  cartItems.forEach(item => {
-    if (item.inStock) subtotal += convertCurrency(item.price, "USD", selectedCurrency);
-  });
+  try {
+    const orderData = prepareOrderData();
+    console.log("ORDER →", orderData.total, selectedCurrency);
 
-  document.getElementById("total-amount").textContent = `${symbol} ${subtotal.toFixed(2)}`;
+    const result = await sendPayment(orderData);
+
+    if (result.status === "success") {
+      console.log("Redirecting to Chapa →", result.checkoutUrl);
+      window.location.href = result.checkoutUrl;
+    } else {
+      showAlert(result.error || "Payment failed");
+    }
+  } catch (err) {
+    handleError(err);
+  } finally {
+    setLoadingState(false);
+  }
 }
 
-function handlePayment(event) {
-  event.preventDefault();
+async function sendPayment(orderInfo) {
+  try {
+    const res = await fetch("/api/chapa/ProceedPayment", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ orderInfo })
+    });
+    const data = await res.json();
 
-  const paymentMethod = document.querySelector('input[name="payment-method"]:checked').value;
-
-  if (paymentMethod === 'pickup') {
-    const cartItems = JSON.parse(localStorage.getItem("cart")) || [];
-    const outOfStockItems = cartItems.filter(item => !item.inStock);
-
-    if (outOfStockItems.length > 0) {
-      alert(`Warning: ${outOfStockItems.length} item(s) in your cart are currently out of stock and may not be available for pickup.`);
+    if (data.status === "success" && data.data?.checkout_url) {
+      return { status: "success", checkoutUrl: data.data.checkout_url };
     }
+    return { status: "error", error: data.error || "Server error" };
+  } catch (err) {
+    return { status: "error", error: "No internet connection" };
+  }
+}
+
+function prepareOrderData() {
+  const email = document.getElementById('buyer-email')?.value.trim();
+  const firstName = document.getElementById('first-name')?.value.trim();
+  const lastName = document.getElementById('last-name')?.value.trim();
+  const phoneNumber = document.getElementById('phone')?.value.trim();
+
+  if (!email || !firstName || !phoneNumber) {
+    throw new Error("Please fill all fields");
   }
 
-  alert('Order submitted successfully!');
+  const subtotalUSD = cartItems.reduce((s, i) => s + i.price, 0);
+  let total = subtotalUSD;
+
+  if (selectedCurrency.toLowerCase() !== "usd") {
+    total = convertCurrency(subtotalUSD, "usd", selectedCurrency.toLowerCase()) || subtotalUSD;
+  }
+
+  total = Math.round(total * 100) / 100;
+
+  return {
+    email, firstName, lastName, phoneNumber,
+    selectedCurrency, cartItems,
+    productIds: cartItems.map(i => i.id),
+    total, subtotalUSD: +subtotalUSD.toFixed(2)
+  };
+}
+
+function setLoadingState(loading) {
+  elements.btnText.textContent = loading ? "Processing..." : "Complete Order";
+  elements.btnSpinner.classList.toggle("hidden", !loading);
+}
+
+function showAlert(msg) { alert(msg); }
+function handleError(err) {
+  console.error("Checkout error:", err);
+  showAlert("Error: " + (err.message || "Try again"));
 }
