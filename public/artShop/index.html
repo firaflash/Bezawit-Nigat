@@ -3,49 +3,79 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="styles.css">
+	<link rel="stylesheet" href="../css/bootstrap.min.css">
+	<link rel="stylesheet" href="styles.css">
     <link rel="icon" href="https://euxhwztkmhzyrcwoupne.supabase.co/storage/v1/object/public/public-img/Art%20Shop%20Imgs/Timeless%20Logo.png" type="image/png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Merriweather&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
     <link href='https://fonts.googleapis.com/css?family=Instrument Serif' rel='stylesheet'>
     <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Playwrite+AU+TAS:wght@100..400&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playwrite+AU+TAS:wght@100..400&display=swap" rel="stylesheet">
 
     <meta name="description" content="Art Works - A platform for showcasing and exploring artworks.">
     <title>Art Works</title>
     
 </head>
 <body>
-<main>
-    <header>
-        <!-- HamBurger Menu -->
-            <button class="burger-menu" aria-label="Open navigation" aria-expanded="false">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M5 8H13.75M5 12H19M10.25 16L19 16" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-                </svg>
-            </button>
-
-        <!-- Logo -->
-        <div class="logo" aria-label="Brand Logo">
-           <a href="../index.html"><img src="https://euxhwztkmhzyrcwoupne.supabase.co/storage/v1/object/public/public-img/Art%20Shop%20Imgs/Timeless%20Logo.png" alt="Logo"></a>
+    <!-- Spinner Start -->
+    <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
+        <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
+            <span class="sr-only"></span>
         </div>
-        
-        <!-- Navigation -->
-        <!-- Navbar Start -->
-        <div class="nav-wrap">
+    </div>
+    <!-- Spinner End -->
+
+    <!-- Decorative Image - Top Left -->
+    <img src="../img/bg-header.png" alt="" class="decorative-img-top">
+<main>
+    <section id="header">
+      <!-- Logo Area -->
+      <div class="logo-area">
+        <a href="../index.html"><img src="https://euxhwztkmhzyrcwoupne.supabase.co/storage/v1/object/public/public-img/Art%20Shop%20Imgs/Timeless%20Logo.png" alt="Logo" class="logo-img"></a>
+      </div>
+
+      <!-- Navbar Start -->
+      <div class="nav-wrap">
         <nav>
-            <ul class="menu-bar">
+          <ul class="menu-bar">
             <li><a href="../index.html">Home</a></li>
             <li><a href="../about.html">About</a></li>
             <li><a href="../arc.html">Arch Works</a></li>
-            <li><a href="./artPage.html">Art Shop</a></li>
+            <li><a href="./index.html">Art Shop</a></li>
             <li><a href="../contact.html">Contacts</a></li>
-            </ul>
+          </ul>
         </nav>
-        </div>
-        <!-- Navbar End -->
-    </header>0072789877
+      </div>
+      <!-- Navbar End -->
+
+      <!-- Splash Nav Start -->
+      <nav id="nav" class="nav" role="navigation">
+        <ul class="nav__menu" id="menu" tabindex="-1" aria-label="main navigation" hidden>
+          <li class="nav__item"><a href="../index.html" class="nav__link">Home</a></li>
+          <li class="nav__item"><a href="../about.html" class="nav__link">About</a></li>
+          <li class="nav__item"><a href="../arc.html" class="nav__link">Arch Works</a></li>
+          <li class="nav__item"><a href="./index.html" class="nav__link">Art Shop</a></li>
+          <li class="nav__item"><a href="../contact.html" class="nav__link">Contacts</a></li>
+        </ul>
+
+        <a href="#nav" class="nav__toggle" role="button" aria-expanded="false" aria-controls="menu">
+          <svg class="menuicon" xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 50 50">
+            <title>Toggle Menu</title>
+            <g>
+              <line class="menuicon__bar" x1="13" y1="16.5" x2="37" y2="16.5"/>
+              <line class="menuicon__bar" x1="13" y1="24.5" x2="37" y2="24.5"/>
+              <line class="menuicon__bar" x1="13" y1="24.5" x2="37" y2="24.5"/>
+              <line class="menuicon__bar" x1="13" y1="32.5" x2="37" y2="32.5"/>
+              <circle class="menuicon__circle" r="23" cx="25" cy="25" />
+            </g>
+          </svg>
+        </a>
+
+        <div class="splash"></div>
+      </nav>
+      <!-- Splash Nav End -->
+    </section>
         <!-- Fixed Cart Icon -->
                 <div class="cart-icon" id="cart-icon">
                     <button id="cart-button" class="cart_button">
@@ -120,15 +150,20 @@
         </section>
            
 </main>
-            <footer class="footer">
-            <p>&copy; 2025 Timeless Emotions Art Shop. All rights reserved.</p>
-            <p class="dev">
-            Website designed & developed by 
-            <a href="https://github.com/firaflash" target="_blank" rel="noopener noreferrer">Firaol Feyisa</a> 
-            & 
-            <a href="https://github.com/Davebash" target="_blank" rel="noopener noreferrer">Dawit Zelalem</a>.
-            </p>
-            </footer>
+
+<footer class="footer">
+<p>&copy; 2025 Timeless Emotions Art Shop. All rights reserved.</p>
+<p class="dev">
+Website designed & developed by 
+<a href="https://github.com/firaflash" target="_blank" rel="noopener noreferrer">Firaol Feyisa</a> 
+& 
+<a href="https://github.com/Davebash" target="_blank" rel="noopener noreferrer">Dawit Zelalem</a>.
+</p>
+</footer>
+<a href="#" class="back-to-top" aria-label="Back to top"><i class="fas fa-arrow-up"></i></a>
+
+<!-- Decorative Image - Bottom Right -->
+<img src="../img/bg-headerright.png" alt="" class="decorative-img-bottom">
 
 <script src="script.js" type="module"></script>
 </body>
