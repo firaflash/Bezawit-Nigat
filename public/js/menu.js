@@ -3,62 +3,62 @@ const portfolioProjects = [
     {
         image: "img/project-1.jpg",
         title: "Interior Design",
-        category: "mockup"
+        category: "mural"
     },
     {
         image: "img/project-2.jpg",
         title: "Interior Design",
-        category: "mockup"
+        category: "mural"
     },
     {
         image: "img/project-3.jpg",
         title: "Interior Design",
-        category: "mockup"
+        category: "live-art"
     },
     {
         image: "img/project-4.jpg",
         title: "House Design",
-        category: "typography"
+        category: "conceptual"
     },
     {
         image: "img/project-5.jpg",
         title: "Arc",
-        category: "mockup"
+        category: "wall-art"
     },
     {
         image: "img/project-6.jpg",
         title: "Architectural",
-        category: "packaging"
+        category: "conceptual"
     },
     {
         image: "img/portfolio.png",
         title: "Building",
-        category: "typography"
+        category: "live-art"
     },
     {
         image: "img/about-2.jpg",
         title: "House Design",
-        category: "photography"
+        category: "mural"
     },
     {
         image: "img/portfolio.png",
         title: "House Design",
-        category: "photography"
+        category: "conceptual"
     },
     {
         image: "images/sq-6.jpg",
         title: "House Design",
-        category: "photography"
+        category: "wall-art"
     },
     {
         image: "images/sq-4.jpg",
         title: "House Design",
-        category: "photography"
+        category: "live-art"
     },
     {
         image: "images/sq-1.jpg",
         title: "House Design",
-        category: "photography"
+        category: "wall-art"
     }
 ];
 
