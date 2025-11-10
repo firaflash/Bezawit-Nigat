@@ -21,9 +21,9 @@ window.addEventListener("DOMContentLoaded", () => {
 });
 
 function convertCurrency(amount, from, to) {
-  to = to.toLowerCase();
+   to = to.toLowerCase();
   from = from.toLowerCase();
-  if (!exchangerate[from] || !exchangerate[to]) {
+   if (!exchangerate[from] || !exchangerate[to]) {
     console.error("Missing currency rate(s)");
     console.log(exchangerate.USD);
     return null;
@@ -73,7 +73,20 @@ function updateCheckoutUI(cartItems, selectedCurrency) {
   document.getElementById("total-amount").textContent = `${symbol} ${subtotal.toFixed(2)}`;
 }
 
+function handlePaymentMethodChange() {
+  document.querySelectorAll('.payment-details').forEach(el => el.style.display = 'none');
+  document.getElementById('pickup-warning').style.display = 'none';
+  document.getElementById('pickup-info').style.display = 'none';
 
+  if (this.value === 'bank-transfer') {
+    document.getElementById('bank-details').style.display = 'block';
+    showPersonalInfo(true);
+  } else if (this.value === 'pickup') {
+    document.getElementById('pickup-warning').style.display = 'block';
+    document.getElementById('pickup-info').style.display = 'block';
+    showPersonalInfo(false);
+  }
+}
 
 document.querySelectorAll('input[name="payment-method"]').forEach(radio => {
   radio.addEventListener('change', handlePaymentMethodChange);
@@ -91,8 +104,27 @@ function showPersonalInfo(show) {
   });
 }
 
+function copyToClipboard(text, successElement) {
+  navigator.clipboard.writeText(text).then(() => {
+    const msg = document.getElementById(successElement);
+    msg.classList.add("show");
 
+    setTimeout(() => {
+      msg.classList.remove("show");
+    }, 1500);
+  }).catch(err => {
+    alert("Failed to copy.");
+  });
+}
 
+function copyEmail(email) {
+  copyToClipboard(email, "copied-message");
+}
+
+document.getElementById("copy-account-btn").addEventListener("click", function() {
+  const accountNumber = document.getElementById("copy-account").textContent;
+  copyToClipboard(accountNumber, "copy-status");
+});
 
 document.getElementById("cart-items").addEventListener("click", (e) => {
   if (e.target.classList.contains("cart-item-remove")) {
@@ -120,4 +152,21 @@ function updateTotals() {
   });
 
   document.getElementById("total-amount").textContent = `${symbol} ${subtotal.toFixed(2)}`;
+}
+
+function handlePayment(event) {
+  event.preventDefault();
+
+  const paymentMethod = document.querySelector('input[name="payment-method"]:checked').value;
+
+  if (paymentMethod === 'pickup') {
+    const cartItems = JSON.parse(localStorage.getItem("cart")) || [];
+    const outOfStockItems = cartItems.filter(item => !item.inStock);
+
+    if (outOfStockItems.length > 0) {
+      alert(`Warning: ${outOfStockItems.length} item(s) in your cart are currently out of stock and may not be available for pickup.`);
+    }
+  }
+
+  alert('Order submitted successfully!');
 }

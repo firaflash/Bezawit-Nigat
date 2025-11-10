@@ -1,10 +1,4 @@
-const emailServiceID = process.env.EMAILJS_SERVICE_ID;
-const emailTemplateID = process.env.EMAILJS_TEMPLATE_ID;
-const emailUserID = process.env.EMAILJS_PRIVATE_KEY;
-
-// utils/sendEmail.js
 export const sendConfirmationEmail = async (templateParams) => {
-  console.log(emailServiceID + " " + emailTemplateID + " " + emailUserID);
   const payload = {
     service_id: process.env.EMAILJS_SERVICE_ID,
     template_id: process.env.EMAILJS_TEMPLATE_ID,
@@ -12,7 +6,6 @@ export const sendConfirmationEmail = async (templateParams) => {
     template_params: templateParams,
     accessToken: process.env.EMAILJS_PRIVATE_KEY
   }
-
 
   try {
     const res = await fetch('https://api.emailjs.com/api/v1.0/email/send', {

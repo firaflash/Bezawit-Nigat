@@ -37,7 +37,6 @@ function isToday(timestamp) {
 
 async function callApi(base = "USD") {
   try {
-    console.log("Fetching api call");
     // ---- 1. Try to load cached rates for today ----
     const savedData = JSON.parse(localStorage.getItem(EXCHANGE_STORAGE_KEY));
     if (savedData && isToday(savedData.date) && savedData.base === base) {
@@ -74,15 +73,21 @@ async function callApi(base = "USD") {
     if (saved) exchangeRates = saved.rates;
   }
 }
-
 function convertCurrency(amount, from, to) {
-  if (!exchangeRates[from] || !exchangeRates[to]) return null;
+  to = to.toLowerCase();
+  from = from.toLowerCase();
+  console.log(from + " " + to + " amount " + amount);
+  if (!exchangeRates[from] || !exchangeRates[to]) {
+    console.error("Missing currency rate(s)");
+    console.log(exchangerate.USD);
+    return null;
+  }
 
   const amountInUSD = amount / exchangeRates[from];
   const converted = amountInUSD * exchangeRates[to];
-
-  return Math.round(converted * 100) / 100;
+  return converted;
 }
+
 document.addEventListener('click', (e) => {
   // --- Modal Description Click ---
   const descElement = e.target.closest('.desc');
@@ -180,7 +185,7 @@ function hideLoader() {
   document.getElementById("loader").style.display = "none";
 }
 async function fetchProducts() {
-  const response = await fetch("/api/dbs/fetchProduct", {
+  const response = await fetch("http://localhost:5555/api/dbs/fetchProduct", {
     method: "POST",
     headers: {
       "Content-Type": "application/json"
@@ -245,7 +250,7 @@ function updateCartUI(cart) {
   cart.forEach(item => {
     let displayPrice = item.price; // USD base
     if (currentCurrency !== "USD") {
-      displayPrice = convertCurrency(item.price, "usd", currentCurrency.toLowerCase());
+      displayPrice = convertCurrency(item.price, "USD", currentCurrency);
     }
 
     const li = document.createElement("li");
@@ -353,7 +358,7 @@ const updateCartTotal = () => {
   document.querySelectorAll(".cart-item-price").forEach(priceEl => {
     const priceUSD = parseFloat(priceEl.dataset.priceUsd); 
     if (!isNaN(priceUSD)) {
-      total += convertCurrency(item.price, "usd", currentCurrency.toLowerCase()); 
+      total += convertCurrency(priceUSD, "USD", currentCurrency); 
     }
   });
 
@@ -390,7 +395,7 @@ function openModal(id) {
     preload.src = url;
   });
 
-  const convertedNew = convertCurrency(item.price, "usd", currentCurrency.toLowerCase());
+  const convertedNew = convertCurrency(productData.priceNew, baseCurrency, selectedCurrency);
 
   const existingModal = document.getElementById("product-modal");
   if (existingModal) existingModal.remove();
@@ -443,14 +448,14 @@ function openModal(id) {
 }
 
 function renderProducts(productList) {
-  const baseCurrency = "usd"; // assume your product prices are stored in USD
+  const baseCurrency = "USD"; // assume your product prices are stored in USD
   const selectedCurrency = currencySelect.value;
 
   productContainer.innerHTML = "";
 
   productList.forEach(product => {
-    const convertedOld = convertCurrency(product.priceOld, baseCurrency, selectedCurrency.toLowerCase());
-    const convertedNew = convertCurrency(product.priceNew, baseCurrency, selectedCurrency.toLowerCase());
+    const convertedOld = convertCurrency(product.priceOld, baseCurrency, selectedCurrency);
+    const convertedNew = convertCurrency(product.priceNew, baseCurrency, selectedCurrency);
 
     const card = document.createElement("div");
     card.className = "card";
@@ -551,9 +556,8 @@ function proceedToCheckout() {
   const cartItems = JSON.parse(localStorage.getItem('cart')) || [];
   if (!cartItems.length) return alert('Cart empty');
 
-  // Pass *only* what checkout needs
   const payload = {
-    selectedCurrency: currencySelect.value,
+    selectedCurrency: currencySelect.value,  // Consistent naming
     exchangeRates: exchangeRates,
     cart: cartItems
   };

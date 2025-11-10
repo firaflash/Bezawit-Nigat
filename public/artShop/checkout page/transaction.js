@@ -74,6 +74,21 @@ function setLoadingState(isLoading) {
   elements.btnText.textContent = isLoading ? 'Processing...' : 'Complete Order';
   elements.btnSpinner.classList.toggle('hidden', !isLoading);
 }
+function convertCurrency(amount, from, to , exchangeRate) {
+  to = to.toLowerCase();
+  from = from.toLowerCase();
+  const exchangeRates = exchangeRate;
+  console.log(from + " " + to + " amount " + amount);
+  if (!exchangeRates[from] || !exchangeRates[to]) {
+    console.error("Missing currency rate(s)");
+    console.log(exchangerate.USD);
+    return null;
+  }
+
+  const amountInUSD = amount / exchangeRates[from];
+  const converted = amountInUSD * exchangeRates[to];
+  return converted;
+}
 
 function validateForm() {
 
@@ -92,34 +107,45 @@ function prepareOrderData() {
   const lastName   = document.getElementById('last-name').value.trim();
   const phoneNumber= document.getElementById('phone').value.trim();
 
-  // ---- phone validation (unchanged) ----
-  const phoneRegex = /^(?:\+\d{1,3}[-.\s]?)?(?:\(\d{1,4}\)[\s.-]?)?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}$/;
-  const clean = phoneNumber.replace(/[^\d+]/g, '').replace(/^\+/, '');
-  if (!phoneRegex.test(phoneNumber) || clean.length < 10) {
-    throw new Error('Valid phone required');
-  }
+    // ---- phone validation (unchanged) ----
+    const phoneRegex = /^(?:\+\d{1,3}[-.\s]?)?(?:\(\d{1,4}\)[\s.-]?)?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}$/;
+    const clean = phoneNumber.replace(/[^\d+]/g, '').replace(/^\+/, '');
+    if (!phoneRegex.test(phoneNumber) || clean.length < 10) {
+      throw new Error('Valid phone required');
+    }
 
-  // ---- data from artshop ----
+    // ---- data from artshop ----
   const payload = JSON.parse(localStorage.getItem('checkoutPayload'));
-  const { cart: cartItems, selectedCurrency: Currency, exchangeRates } = payload;
 
-  selectedCurrency = selectedCurrency.toLowerCase();
+  // Destructure with the correct property name
+  const { cart: cartItems, Currency: selectedCurrency, exchangeRates } = payload;
+
+  console.log(cartItems);
+
+  const selectedCurrencyLower = selectedCurrency.toLowerCase();
+
+  console.log(selectedCurrency , " selected currency in lower case");
   
+    // ---- USD subtotal (prices are stored in USD) ----
+    const subtotalUSD = cartItems.reduce((s, it) => {
+      console.log(it.price);
+      return s + +it.price
+    },0);
 
-  // ---- USD subtotal (prices are stored in USD) ----
-  const subtotalUSD = cartItems.reduce((s, it) => s + +it.price, 0);
+    console.log(subtotalUSD);
 
-  // ---- convert to selected currency ----
-  let total = subtotalUSD;
-  if (Currency !== 'usd' && exchangeRates.usd && exchangeRates[Currency]) {
-    const inUSD = subtotalUSD / exchangeRates.USD;
-    total = inUSD * exchangeRates[Currency];
-  }
-  total = Math.round(total * 100) / 100;   // 2-dp
+    // ---- convert to selected currency ----
+    let total = subtotalUSD;
+    if (selectedCurrencyLower !== 'usd' && exchangeRates.usd && exchangeRates[selectedCurrencyLower]) {
+      total = convertCurrency(subtotalUSD , 'usd' , selectedCurrency ,exchangeRates)
+    }
+    total = Math.round(total * 100) / 100;   // 2-dp
 
+  console.log(total);
+  
   return {
     email, firstName, lastName, phoneNumber,
-    Currency,
+    selectedCurrency,
     cartItems,
     productIds: cartItems.map(i => i.id.toString()),
     subtotalUSD: +subtotalUSD.toFixed(2),
