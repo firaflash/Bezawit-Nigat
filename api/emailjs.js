@@ -7,6 +7,8 @@ export const sendConfirmationEmail = async (templateParams) => {
     accessToken: process.env.EMAILJS_PRIVATE_KEY
   }
 
+  console.log(payload);
+
   try {
     const res = await fetch('https://api.emailjs.com/api/v1.0/email/send', {
       method: 'POST',
