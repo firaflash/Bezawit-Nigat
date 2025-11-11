@@ -92,6 +92,7 @@ export const verifyPayment = async (req, res) => {
       } else {
         console.log(`SOLD → ${sellResult.count} artwork(s) | IDs: [${sellResult.updated.join(", ")}] | Tx: ${tx_ref}`);
       }
+      
 
       // 2. SEND CONFIRMATION EMAIL
       const templateParams = {

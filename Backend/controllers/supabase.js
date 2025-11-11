@@ -50,3 +50,51 @@ export const sellProduct = async (cartItems) => {
     return { success: false, error: err.message };
   }
 };
+
+export const recordSoldItem = async ({
+    productId,
+    buyerName,
+    buyerEmail,
+    buyerPhone = null,
+    transactionId = null,
+    totalPrice,
+    currency = "ETB",
+    receiptUrl = null
+  }) => {
+    if (!productId || !buyerName || !buyerEmail || !totalPrice) {
+      return { success: false, error: "Missing required fields" };
+    }
+
+    try {
+      const { data, error } = await supabase
+        .from("sold_items")
+        .insert({
+          product_id: parseInt(productId, 10),
+          buyer_name: buyerName.trim(),
+          buyer_email: buyerEmail.trim(),
+          buyer_phone: buyerPhone?.trim() || null,
+          transaction_id: transactionId || `TXN_${Date.now()}_${productId}`,
+          total_price: parseFloat(totalPrice),
+          currency: currency.toUpperCase(),
+          receipt_url: receiptUrl || null,
+          status: "completed",
+          sale_date: new Date().toISOString()
+        })
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      console.log(`SALE RECORDED → "${data.buyer_name}" bought artwork #${data.product_id} | ${data.total_price} ${data.currency} | Addis Ababa Time: ${new Date().toLocaleString("en-ET", { timeZone: "Africa/Addis_Ababa" })}`);
+
+      return {
+        success: true,
+        saleId: data.id,
+        message: "Sale recorded forever in TimeLess Emotions history"
+      };
+
+    } catch (err) {
+      console.error("recordSoldItem failed:", err);
+      return { success: false, error: err.message };
+    }
+};
