@@ -36,7 +36,7 @@ window.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
-  cartItems = payload.cartItems || [];
+  cartItems = payload.cart || [];
   selectedCurrency = payload.selectedCurrency || "USD";
   exchangeRates = payload.exchangeRates || {};
 
