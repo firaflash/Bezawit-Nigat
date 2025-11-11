@@ -951,9 +951,17 @@ color: #fff ;
 .stock {
   font-size: 11px;
   font-weight: 600;
-  color: #22C55E;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
+.instock {
+  color: #22C55E; /* Green */
+}
+
+.outstock {
+  color: #ff0000; /* Red */
+}
 
 @media (max-width: 400px) {
   .card {

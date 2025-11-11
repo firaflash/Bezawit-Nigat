@@ -415,8 +415,10 @@ function renderProducts(productList) {
             </svg>
           </button>
         </div>
-        <div class="stock">${product.inStock ? "In Stock" : "Out of Stock"}</div>
-      </div>
+         <div class="stock ${product.inStock ? 'instock' : 'outstock'}">
+            <span>•</span> ${product.inStock ? "In Stock" : "Out of Stock"}
+          </div>
+        </div>
     `;
     productContainer.appendChild(card);
   });
