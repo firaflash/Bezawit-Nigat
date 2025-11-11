@@ -956,11 +956,11 @@ color: #fff ;
 }
 
 .instock {
-  color: #22C55E; /* Green */
+  color: #22C55E;
 }
 
 .outstock {
-  color: #ff0000; /* Red */
+  color: #ff0000; 
 }
 
 @media (max-width: 400px) {
