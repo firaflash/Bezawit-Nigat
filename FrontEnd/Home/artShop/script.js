@@ -28,6 +28,11 @@ function isToday(timestamp) {
   const today = new Date().toDateString();
   return savedDate === today;
 }
+
+function formatNumberWithCommas(number) {
+    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
 async function callApi(base = "USD") {
   try {
     // ---- 1. Try to load cached rates for today ----
@@ -69,7 +74,7 @@ function convertCurrency(amount, from, to) {
   console.log(from + " " + to + " amount " + amount);
   if (!exchangeRates[from] || !exchangeRates[to]) {
     console.error("Missing currency rate(s)");
-    console.log(exchangerate.USD);
+    console.log(exchangeRates.USD);
     return null;
   }
   const amountInUSD = amount / exchangeRates[from];
@@ -222,7 +227,7 @@ function updateCartUI(cart) {
       <div class="cart-item-info">
         <div class="cart-item-title">${item.title}</div>
         <div class="cart-item-price" data-price-usd="${item.price}">
-          ${currentCurrency} ${displayPrice ? displayPrice.toFixed(2) : "N/A"}
+          ${currentCurrency} ${formatNumberWithCommas(displayPrice) ? formatNumberWithCommas(displayPrice.toFixed(2)) : "N/A"}
         </div>
       </div>
       <button class="cart-item-remove">✖</button>
@@ -302,7 +307,7 @@ const updateCartTotal = () => {
       total += convertCurrency(priceUSD, "USD", currentCurrency);
     }
   });
-  document.getElementById("cart-total").textContent = `${currentCurrency} ${total.toFixed(2)}`;
+  document.getElementById("cart-total").textContent = `${formatNumberWithCommas(currentCurrency)} ${formatNumberWithCommas(total.toFixed(2))}`;
 };
 const removeItem = (btn) => {
   const item = btn.closest(".cart-item");
@@ -353,7 +358,7 @@ function openModal(id) {
             ${productData.features.map(tag => `<span class="tags">#${tag}</span>`).join("")}
           </div>
           <div class="pandb">
-            <h3 class="modal-price">${selectedCurrency} ${convertedNew ? convertedNew.toFixed(2) : "N/A"}</h3>
+            <h3 class="modal-price">${selectedCurrency} ${formatNumberWithCommas(convertedNew) ? formatNumberWithCommas(convertedNew.toFixed(2)) : "N/A"}</h3>
             <button class="btn" data-id="${productData.id}">
               <span>Add To Cart</span>
               <svg class="icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -403,8 +408,8 @@ function renderProducts(productList) {
         </div>
         <div class="bottom">
           <div class="price">
-            <span class="old">${selectedCurrency} ${convertedOld ? convertedOld.toFixed(2) : "N/A"}</span>
-            <span class="new">${selectedCurrency} ${convertedNew ? convertedNew.toFixed(2) : "N/A"}</span>
+            <span class="old">${selectedCurrency} ${formatNumberWithCommas(convertedOld) ? formatNumberWithCommas(convertedOld.toFixed(2)) : "N/A"}</span>
+            <span class="new">${selectedCurrency} ${formatNumberWithCommas(convertedNew) ? formatNumberWithCommas(convertedNew.toFixed(2)) : "N/A"}</span>
           </div>
           <button class="btn" ${product.inStock ? `data-id="${product.id}"` : 'disabled aria-disabled="true"'}>
             <span>Add To Cart</span>
