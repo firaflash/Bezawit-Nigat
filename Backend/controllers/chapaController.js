@@ -1,6 +1,6 @@
 // chapaController.js
 import dotenv from "dotenv";
-import { sellProduct } from "./supabase.js";
+import { sellProduct, insertSoldItems, isPaymentProcessed, markPaymentProcessed } from "./supabase.js";
 import { sendConfirmationEmail } from "./emailjs.js";
 
 dotenv.config();
@@ -14,6 +14,7 @@ export const proceedPayment = async (req, res) => {
   try {
     const txRef = `TIMLSS-${Date.now()}-${Math.floor(Math.random() * 10000)}`;
     const orderInfo = req.body.orderInfo;
+    console.log(orderInfo);
 
     // Store order for verification
     pendingOrders.set(txRef, orderInfo);
@@ -63,6 +64,12 @@ export const proceedPayment = async (req, res) => {
 export const verifyPayment = async (req, res) => {
   try {
     const { tx_ref } = req.body;
+    console.log(req.body);
+    const alreadyProcessed = await isPaymentProcessed(tx_ref);
+    if (alreadyProcessed) {
+      console.log(`Duplicate webhook ignored → ${tx_ref}`);
+      return res.status(200).json({ message: "Already processed", tx_ref });
+    }
 
     const response = await fetch(`https://api.chapa.co/v1/transaction/verify/${tx_ref}`, {
       method: "GET",
@@ -77,22 +84,32 @@ export const verifyPayment = async (req, res) => {
       console.log(`Payment verified → ${tx_ref}`);
 
       const orderInfo = pendingOrders.get(tx_ref);
-
       if (!orderInfo) {
         console.warn(`No order info found for tx_ref: ${tx_ref}`);
-        return res.status(200).json(data); // Still acknowledge Chapa
+        await markPaymentProcessed(tx_ref, null);
+        return res.status(200).json(data);
       }
 
-      // 1. SECURE INVENTORY FIRST
+      // === MARK PROCESSED EARLY ===
+      const marked = await markPaymentProcessed(tx_ref, orderInfo);
+      if (!marked) {
+        console.warn(`Failed to mark processed → ${tx_ref}`);
+        return res.status(200).json(data);
+      }
+
+      // 1. Update stock
       const sellResult = await sellProduct(orderInfo.cartItems);
 
-      if (!sellResult.success) {
-        console.error(`STOCK UPDATE FAILED → ${tx_ref} | Error: ${sellResult.error}`);
-        // Don't block the flow — money is already taken
-      } else {
+      // 2. Insert sold items
+      const soldItemsResult = await insertSoldItems(orderInfo.cartItems, orderInfo, tx_ref);
+
+      // 3. Log results
+      if (sellResult.success) {
         console.log(`SOLD → ${sellResult.count} artwork(s) | IDs: [${sellResult.updated.join(", ")}] | Tx: ${tx_ref}`);
+      } else {
+        console.error(`STOCK UPDATE FAILED → ${tx_ref} | Error: ${sellResult.error}`);
       }
-      
+
 
       // 2. SEND CONFIRMATION EMAIL
       const templateParams = {
@@ -124,6 +141,12 @@ export const verifyPayment = async (req, res) => {
         console.log(`Email sent → ${orderInfo.email} | Tx: ${tx_ref}`);
       } catch (emailErr) {
         console.error(`Email failed → ${orderInfo.email} | Tx: ${tx_ref} | Error:`, emailErr);
+      }
+
+      if (!soldItemsResult.success) {
+        console.error(`INSERT FAILED → sold_items not recorded | Tx: ${tx_ref}`);
+      } else {
+        console.log(`SOLD ITEMS RECORDED → ${soldItemsResult.data.length} rows | Tx: ${tx_ref}`);
       }
 
       // Clean up

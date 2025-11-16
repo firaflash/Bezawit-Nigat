@@ -50,51 +50,86 @@ export const sellProduct = async (cartItems) => {
     return { success: false, error: err.message };
   }
 };
+export const insertSoldItems = async (cartItems, orderInfo, txRef) => {
+  try {
+    const rows = cartItems.map(item => ({
+      product_id: item.id,
+      buyer_name: `${orderInfo.firstName} ${orderInfo.lastName}`,
+      buyer_email: orderInfo.email,
+      buyer_phone: orderInfo.phoneNumber,
+      transaction_id: txRef,
+      total_price: item.price,
+      currency: orderInfo.selectedCurrency,
+      receipt_url: `https://timelessemotions.art/receipt/${txRef}`,
+      status: "completed",
+    }));
 
-export const recordSoldItem = async ({
-    productId,
-    buyerName,
-    buyerEmail,
-    buyerPhone = null,
-    transactionId = null,
-    totalPrice,
-    currency = "ETB",
-    receiptUrl = null
-  }) => {
-    if (!productId || !buyerName || !buyerEmail || !totalPrice) {
-      return { success: false, error: "Missing required fields" };
+    const { data, error } = await supabase
+      .from("sold_items")
+      .insert(rows);
+
+    if (error) {
+      console.error("insertSoldItems: Supabase insert error →", error.message);
+      return { success: false, error: error.message };
     }
 
-    try {
-      const { data, error } = await supabase
-        .from("sold_items")
-        .insert({
-          product_id: parseInt(productId, 10),
-          buyer_name: buyerName.trim(),
-          buyer_email: buyerEmail.trim(),
-          buyer_phone: buyerPhone?.trim() || null,
-          transaction_id: transactionId || `TXN_${Date.now()}_${productId}`,
-          total_price: parseFloat(totalPrice),
-          currency: currency.toUpperCase(),
-          receipt_url: receiptUrl || null,
-          status: "completed",
-          sale_date: new Date().toISOString()
-        })
-        .select()
-        .single();
+    console.log(
+      `INSERTED → ${rows.length} sold_items record(s) | Tx: ${txRef} | Product IDs: [${rows
+        .map(r => r.product_id)
+        .join(", ")}]`
+    );
 
-      if (error) throw error;
+    return { success: true, data };
+  } catch (err) {
+    console.error("insertSoldItems: Unexpected error →", err);
+    return { success: false, error: err.message };
+  }
+};
 
-      console.log(`SALE RECORDED → "${data.buyer_name}" bought artwork #${data.product_id} | ${data.total_price} ${data.currency} | Addis Ababa Time: ${new Date().toLocaleString("en-ET", { timeZone: "Africa/Addis_Ababa" })}`);
+// supabase.js (add at the bottom)
 
-      return {
-        success: true,
-        saleId: data.id,
-        message: "Sale recorded forever in TimeLess Emotions history"
-      };
+// Check if payment was already processed
+export const isPaymentProcessed = async (tx_ref) => {
+  try {
+    const { data, error } = await supabase
+      .from('processed_payments')
+      .select('tx_ref')
+      .eq('tx_ref', tx_ref)
+      .maybeSingle(); // Use maybeSingle() to avoid error if not found
 
-    } catch (err) {
-      console.error("recordSoldItem failed:", err);
-      return { success: false, error: err.message };
+    if (error && error.code !== 'PGRST116') { // PGRST116 = no rows
+      console.error('isPaymentProcessed: DB error →', error);
+      return false;
     }
+
+    return !!data; // true if exists, false if not
+  } catch (err) {
+    console.error('isPaymentProcessed: Unexpected error →', err);
+    return false;
+  }
+};
+
+// Mark payment as processed (idempotent insert)
+export const markPaymentProcessed = async (tx_ref, orderInfo) => {
+  try {
+    const { error } = await supabase
+      .from('processed_payments')
+      .upsert(
+        {
+          tx_ref
+        },
+        { onConflict: 'tx_ref' } // upserts safely
+      );
+
+    if (error) {
+      console.error('markPaymentProcessed: Failed →', error.message);
+      return false;
+    }
+
+    console.log(`Payment marked as processed → ${tx_ref}`);
+    return true;
+  } catch (err) {
+    console.error('markPaymentProcessed: Unexpected error →', err);
+    return false;
+  }
 };
