@@ -30,3 +30,9 @@ app.get('/', (req, res) => {
 
 
 export default app;
+// Only listen locally
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(PORT, () => {
+    console.log(`Server running locally on port ${PORT}`);
+  });
+}
