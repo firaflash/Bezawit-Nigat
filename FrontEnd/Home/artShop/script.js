@@ -307,7 +307,7 @@ const updateCartTotal = () => {
       total += convertCurrency(priceUSD, "USD", currentCurrency);
     }
   });
-  document.getElementById("cart-total").textContent = `${formatNumberWithCommas(currentCurrency)} ${formatNumberWithCommas(total.toFixed(2))}`;
+  document.getElementById("cart-total").textContent = `${currentCurrency} ${formatNumberWithCommas(total.toFixed(2))}`;
 };
 const removeItem = (btn) => {
   const item = btn.closest(".cart-item");
