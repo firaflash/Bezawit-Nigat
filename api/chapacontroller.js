@@ -63,6 +63,9 @@ export const proceedPayment = async (req, res) => {
 export const verifyPayment = async (req, res) => {
   try {
     const { tx_ref } = req.body;
+    console.log(req.body);
+    
+
 
     const response = await fetch(`https://api.chapa.co/v1/transaction/verify/${tx_ref}`, {
       method: "GET",
@@ -85,6 +88,8 @@ export const verifyPayment = async (req, res) => {
 
       // 1. SECURE INVENTORY FIRST
       const sellResult = await sellProduct(orderInfo.cartItems);
+      const soldItemsResult = await insertSoldItems(orderInfo.cartItems, orderInfo, tx_ref);
+
 
       if (!sellResult.success) {
         console.error(`STOCK UPDATE FAILED → ${tx_ref} | Error: ${sellResult.error}`);
@@ -92,6 +97,8 @@ export const verifyPayment = async (req, res) => {
       } else {
         console.log(`SOLD → ${sellResult.count} artwork(s) | IDs: [${sellResult.updated.join(", ")}] | Tx: ${tx_ref}`);
       }
+
+      
 
       // 2. SEND CONFIRMATION EMAIL
       const templateParams = {
@@ -123,6 +130,11 @@ export const verifyPayment = async (req, res) => {
         console.log(`Email sent → ${orderInfo.email} | Tx: ${tx_ref}`);
       } catch (emailErr) {
         console.error(`Email failed → ${orderInfo.email} | Tx: ${tx_ref} | Error:`, emailErr);
+      }
+      if (!soldItemsResult.success) {
+        console.error(`INSERT FAILED → sold_items not recorded | Tx: ${tx_ref}`);
+      } else {
+        console.log(`SOLD ITEMS RECORDED → ${soldItemsResult.data.length} rows | Tx: ${tx_ref}`);
       }
 
       // Clean up
