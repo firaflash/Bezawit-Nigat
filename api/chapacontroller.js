@@ -1,6 +1,6 @@
 // chapaController.js
 import dotenv from "dotenv";
-import { sellProduct } from "./supabase.js";
+import { sellProduct, insertSoldItems, isPaymentProcessed, markPaymentProcessed } from "./supabase.js";
 import { sendConfirmationEmail } from "./emailjs.js";
 
 dotenv.config();

@@ -86,9 +86,7 @@ export const insertSoldItems = async (cartItems, orderInfo, txRef) => {
   }
 };
 
-// supabase.js (add at the bottom)
 
-// Check if payment was already processed
 export const isPaymentProcessed = async (tx_ref) => {
   try {
     const { data, error } = await supabase
