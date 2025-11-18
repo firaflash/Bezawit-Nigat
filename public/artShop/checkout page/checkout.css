@@ -223,6 +223,7 @@ main{
   margin-bottom: 20px;
   text-align: center;
   color:#e0e0e0;
+  padding-top: 150px;
 }
 
 .payment-option {
@@ -370,68 +371,6 @@ main{
  font-size: 1.5rem;
 }
 
-/* Copy_Email-btn */
-.copy-email-container {
-  position: relative;
-  margin-top: 20px;
-  display: inline-block;
-}
-
-.copy-email-btn {
-  background-color: rgba(30, 41, 59, 0.8);
-  color: #ffffff;
-  padding: 10px 16px;
-  border: none;
-  border-radius: 10px;
-  font-size: 0.95rem;
-  font-weight: 500;
-  cursor: pointer;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-  transition: all 0.3s ease;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.copy-email-btn:hover {
-  background-color: rgba(30, 41, 59, 1);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
-}
-
-.copy-email-btn:active {
-  transform: scale(0.98);
-}
-
-/* COPIED NOTIFICATION */
-.copied-notification {
-  position: absolute;
-  bottom: -50px; /* Positioned below the button */
-  left: 50%;
-  transform: translateX(-50%);
-  background: rgba(30, 41, 59, 0.95);
-  color: #81cfff;
-  padding: 8px 16px;
-  border-radius: 10px;
-  font-size: 0.85rem;
-  font-weight: 500;
-  white-space: nowrap;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.3s ease, transform 0.3s ease;
-  z-index: 10;
-}
-
-.copied-notification.show {
-  opacity: 1;
-  transform: translateX(-50%) translateY(-10px);
-}
 
 
 /* Payment Details Section */
@@ -453,31 +392,38 @@ main{
   margin-bottom: 1rem;
 }
 
-.warning-box {
-  margin-top: 1rem;
-  padding: 1rem;
-  background-color: #fff3cd;
-  border: 1px solid #ffeeba;
-  color: #856404;
-  border-radius: 8px;
-}
 
 /* Pay Button */
+/* Pay Button - Improved version that perfectly matches Chapa's official green */
 .pay-btn {
-  background-color: #22b877;
+  background-color: rgb(107,17,202);           /* Official Chapa primary green */
   color: white;
   font-size: 1.1rem;
-  padding: 15px;
+  font-weight: 600;                    /* Slightly bolder for better readability */
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  letter-spacing: 0.3px;
+  padding: 16px 20px;                  /* A bit more balanced padding */
   border: none;
-  border-radius: 10px;
+  border-radius: 12px;                 /* Modern rounded corners (Chapa uses ~12px) */
   cursor: pointer;
   width: 100%;
   margin-top: 15px;
-  transition: background 0.3s;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;                           /* Nice spacing between logo and text */
+  box-shadow: 0 4px 12px rgba(0, 176, 116, 0.25);  /* Subtle Chapa-green shadow */
 }
 
 .pay-btn:hover {
-  background-color: #1ca067;
+  background-color: rgb(107,17,202,.7);           /* Slightly darker official green on hover */
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(0, 176, 116, 0.35);
+}
+
+.pay-btn:active {
+  transform: translateY(0);
 }
 
 .spinner {
@@ -488,7 +434,6 @@ main{
   border-radius: 50%;
   border-top-color: #fff;
   animation: spin 1s ease-in-out infinite;
-  margin-left: 10px;
 }
 
 @keyframes spin {
@@ -499,6 +444,11 @@ main{
   display: none;
 }
 
+.chapa-logo {
+  width: 28%;               /* Slightly smaller so text has enough room */
+  height: auto;
+  max-width: 110px;         /* Prevents it from getting too big on large screens */
+}
 /* Line Separator */
 .line {
   height: 1px;
