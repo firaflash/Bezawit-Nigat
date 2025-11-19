@@ -9,6 +9,11 @@ const CHAPA_KEY = process.env.CHAPA_SECRET_KEY;
 // In-memory pending orders (tx_ref → orderInfo)
 const pendingOrders = new Map();
 
+function formatNumberWithCommas(number) {
+    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
+
 // Initialize Payment
 export const proceedPayment = async (req, res) => {
   try {
@@ -63,7 +68,6 @@ export const proceedPayment = async (req, res) => {
 export const verifyPayment = async (req, res) => {
   try {
     const { tx_ref } = req.body;
-    console.log(req.body);
     const alreadyProcessed = await isPaymentProcessed(tx_ref);
     if (alreadyProcessed) {
       console.log(`Duplicate webhook ignored → ${tx_ref}`);
@@ -128,7 +132,7 @@ export const verifyPayment = async (req, res) => {
           month: "long",
           day: "numeric",
         }),
-        total_price: orderInfo.total,
+        total_price: formatNumberWithCommas(orderInfo.total),
         logo_url: "https://res.cloudinary.com/dvdmhurvt/image/upload/v1762345498/WhiteTLLogo_qsxota.png",
         receipt_url: `https://timelessemotions.art/receipt/${tx_ref}`,
         support_phone: "+251 912 345 678",

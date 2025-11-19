@@ -9,6 +9,11 @@ const elements = {
   btnSpinner: null
 };
 
+function formatNumberWithCommas(number) {
+    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
+
 window.addEventListener("DOMContentLoaded", () => {
   console.log("Checkout page loaded – DOM ready");
 
@@ -93,15 +98,15 @@ function updateCheckoutUI() {
       <img src="${item.image}" alt="${item.title}" class="cart-item-img">
       <div class="cart-item-info">
         <div class="cart-item-title">${item.title}</div>
-        <div class="cart-item-price">${symbol} ${price.toFixed(2)}</div>
+        <div class="cart-item-price">${symbol} ${formatNumberWithCommas(price.toFixed(2))}</div>
       </div>
       <button class="cart-item-remove">X</button>
     `;
     container.appendChild(li);
   });
 
-  totalEl.textContent = `${symbol} ${subtotal.toFixed(2)}`;
-  console.log(`RENDERED: ${symbol} ${subtotal.toFixed(2)}`);
+  totalEl.textContent = `${symbol} ${formatNumberWithCommas(subtotal.toFixed(2))}`;
+  console.log(`RENDERED: ${symbol} ${formatNumberWithCommas(subtotal.toFixed(2))}`);
 }
 
 // REMOVE ITEM
