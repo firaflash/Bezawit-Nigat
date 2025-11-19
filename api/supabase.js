@@ -64,28 +64,44 @@ export const insertSoldItems = async (cartItems, orderInfo, txRef) => {
       status: "completed",
     }));
 
+    // Make sure you're using the service_role key for bypassing RLS
     const { data, error } = await supabase
       .from("sold_items")
-      .insert(rows);
+      .insert(rows)
+      .select();
 
     if (error) {
-      console.error("insertSoldItems: Supabase insert error →", error.message);
+      console.error("insertSoldItems: Supabase insert error →", error);
+      
+      // Check if it's an RLS error
+      if (error.message.includes('row-level security policy')) {
+        return { 
+          success: false, 
+          error: "RLS policy blocked insert. Check table permissions.",
+          details: error.message
+        };
+      }
+      
       return { success: false, error: error.message };
     }
 
-    console.log(
-      `INSERTED → ${rows.length} sold_items record(s) | Tx: ${txRef} | Product IDs: [${rows
-        .map(r => r.product_id)
-        .join(", ")}]`
-    );
+    console.log(`INSERTED → ${rows.length} sold_items record(s) | Tx: ${txRef}`);
 
-    return { success: true, data };
+    return { 
+      success: true, 
+      data: data,
+      insertedCount: data ? data.length : rows.length
+    };
+
   } catch (err) {
     console.error("insertSoldItems: Unexpected error →", err);
-    return { success: false, error: err.message };
+    return { 
+      success: false, 
+      error: err.message,
+      source: "try_catch_exception"
+    };
   }
 };
-
 
 export const isPaymentProcessed = async (tx_ref) => {
   try {

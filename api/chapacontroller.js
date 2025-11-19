@@ -26,8 +26,8 @@ export const proceedPayment = async (req, res) => {
       last_name: orderInfo.lastName,
       phone_number: orderInfo.phoneNumber,
       tx_ref: txRef,
-      callback_url: "https://bezawit-nigat.vercel.app/api/chapa/Verify",
-      return_url: "https://bezawit-nigat.vercel.app/artShop/index.html",
+      callback_url: "https://hungry-doodles-vanish.loca.lt/api/chapa/Verify",
+      return_url: "http://localhost:5000/artShop/index.html",
       customization: {
         title: "TimeLess Emotion",
         description: "Art Purchase",
@@ -64,8 +64,11 @@ export const verifyPayment = async (req, res) => {
   try {
     const { tx_ref } = req.body;
     console.log(req.body);
-    
-
+    const alreadyProcessed = await isPaymentProcessed(tx_ref);
+    if (alreadyProcessed) {
+      console.log(`Duplicate webhook ignored → ${tx_ref}`);
+      return res.status(200).json({ message: "Already processed", tx_ref });
+    }
 
     const response = await fetch(`https://api.chapa.co/v1/transaction/verify/${tx_ref}`, {
       method: "GET",
@@ -80,25 +83,40 @@ export const verifyPayment = async (req, res) => {
       console.log(`Payment verified → ${tx_ref}`);
 
       const orderInfo = pendingOrders.get(tx_ref);
-
       if (!orderInfo) {
         console.warn(`No order info found for tx_ref: ${tx_ref}`);
-        return res.status(200).json(data); // Still acknowledge Chapa
+        await markPaymentProcessed(tx_ref, null);
+        return res.status(200).json(data);
       }
 
-      // 1. SECURE INVENTORY FIRST
+      // === MARK PROCESSED EARLY ===
+      const marked = await markPaymentProcessed(tx_ref, orderInfo);
+      if (!marked) {
+        console.warn(`Failed to mark processed → ${tx_ref}`);
+        return res.status(200).json(data);
+      }
+
+      // 1. Update stock
       const sellResult = await sellProduct(orderInfo.cartItems);
+
+      // 2. Insert sold items
       const soldItemsResult = await insertSoldItems(orderInfo.cartItems, orderInfo, tx_ref);
 
-
-      if (!sellResult.success) {
-        console.error(`STOCK UPDATE FAILED → ${tx_ref} | Error: ${sellResult.error}`);
-        // Don't block the flow — money is already taken
-      } else {
+      // 3. Log results
+      if (sellResult.success) {
         console.log(`SOLD → ${sellResult.count} artwork(s) | IDs: [${sellResult.updated.join(", ")}] | Tx: ${tx_ref}`);
+      } else {
+        console.error(`STOCK UPDATE FAILED → ${tx_ref} | Error: ${sellResult.error}`);
       }
-
-      
+      if (!soldItemsResult.success) {
+        console.error(`INSERT FAILED → sold_items not recorded | Tx: ${tx_ref} | Error: ${soldItemsResult.error}`);
+        // Don't proceed with email if sold items failed
+        return res.status(200).json({ 
+          ...data, 
+          warning: "Payment verified but order recording failed" 
+        });
+      }
+      console.log(`SOLD ITEMS RECORDED → ${soldItemsResult.insertedCount} rows | Tx: ${tx_ref}`);
 
       // 2. SEND CONFIRMATION EMAIL
       const templateParams = {
@@ -131,11 +149,8 @@ export const verifyPayment = async (req, res) => {
       } catch (emailErr) {
         console.error(`Email failed → ${orderInfo.email} | Tx: ${tx_ref} | Error:`, emailErr);
       }
-      if (!soldItemsResult.success) {
-        console.error(`INSERT FAILED → sold_items not recorded | Tx: ${tx_ref}`);
-      } else {
-        console.log(`SOLD ITEMS RECORDED → ${soldItemsResult.data.length} rows | Tx: ${tx_ref}`);
-      }
+
+      
 
       // Clean up
       pendingOrders.delete(tx_ref);
