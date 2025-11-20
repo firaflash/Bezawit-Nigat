@@ -309,7 +309,7 @@ color: #fff ;
 }
 
 /* Decorative image */
-.decorative-img-top {
+.decorative-design-top {
   position: fixed;
   top: 0;
   left: 0;
@@ -321,7 +321,7 @@ color: #fff ;
   user-select: none;
 }
 
-.decorative-img-bottom {
+.decorative-design-bottom {
   position: fixed;
   bottom: 0;
   right: 0;
@@ -1015,7 +1015,6 @@ color: #fff ;
   width: 100vw;
   height: 100vh;
   background-color: rgba(0, 0, 0, 0.3);
-  /* semi-transparent dark background */
   z-index: 10;
   justify-content: center;
   align-items: center;
@@ -1165,39 +1164,75 @@ color: #fff ;
   border-radius: 40px;
   float: right;
 }
-
 .footer {
-  /* background-color: #111 !important; */
-  color: #f1f1f1;
+  background: #ffffff;
+  border-top: 1px solid #e2e8f0;
+  padding: 60px 20px 40px;
+  margin-top: 120px;
   text-align: center;
-  padding: 20px 15px;
-  font-family: 'Instrument Serif', serif;
-  font-size: 1rem;
-  border-top: 1px solid #444;
+  font-family: 'Inter', system-ui, sans-serif;
+  color: #475467;
   position: relative;
-  z-index: 1;
-  font-weight: 600;
 }
 
+.footer::before {
+  content: '';
+  position: absolute;
+  top: -1px; left: 50%;
+  transform: translateX(-50%);
+  width: 100px;
+  height: 4px;
+  background: linear-gradient(90deg, #6244C5, #a78bfa);
+  border-radius: 2px;
+}
 
-.footer a {
-  color: #aaa;
+.footer-content {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.copyright {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #1e293b;
+  margin-bottom: 12px;
+  letter-spacing: 0.3px;
+}
+
+.dev {
+  font-size: 0.95rem;
+  color: #64748b;
+}
+
+.dev a {
+  color: #6244C5;
   text-decoration: none;
-  transition: color 0.3s ease;
+  font-weight: 600;
+  padding: 0 4px;
+  transition: all 0.3s ease;
 }
 
-.footer a:hover {
-  color: #fff;
+.dev a:hover {
+  color: #4c1d95;
   text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
-.footer .dev {
-  font-size: 0.85rem;
-  color: #aaa;
-  margin-top: 10px;
+/* Subtle floating animation on load */
+.footer-content {
+  animation: fadeUp 0.8s ease-out 0.2s both;
 }
 
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
 
+/* Mobile */
+@media (max-width: 768px) {
+  .footer { margin-top: 100px; padding: 50px 20px; }
+  .copyright { font-size: 0.95rem; }
+}
 
 
 /* responsive */
@@ -1242,9 +1277,7 @@ color: #fff ;
 
   #product-modal {
     top: 70px;
-    /* Pushes modal content below the fixed header */
     height: calc(100vh - 70px);
-    /* Avoids modal overlapping the header */
     overflow: auto;
   }
 
@@ -1423,3 +1456,4 @@ color: #fff ;
     bottom: 18px;
   }
 }
+
