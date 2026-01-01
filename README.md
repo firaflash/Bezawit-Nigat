@@ -132,55 +132,41 @@ npm start      # Production start
 ```
 
 
-🌐 API Endpoints (REST)
-All endpoints are under /api and follow REST best practices.
+## 🔁 API endpoints (summary)
 
-GET /                        → Serves main portfolio (index.html)
-POST /api/chapa/proceedpayment → Initialize Chapa payment session (body: orderInfo)
-POST /api/chapa/verify         → Verify payment webhook/callback, update DB, send email
-POST /api/dbs/fetchProduct     → Get all available products (with joins & filters)
-POST /api/dbs/sellProduct      → Mark products as sold (internal/admin usage)
-
-Features implemented in backend:
-
-Input validation (request body schema checks)
-Error handling middleware (consistent JSON error responses)
-Proper async/await usage with try-catch blocks
-PostgreSQL best practices (indexed queries, joins between products & categories/sales)
-
-See /api/ folder for detailed implementation and request/response examples.
-
-🛍️ Art Shop & Payment Flow Notes
-
-User selects products → submits order info
-Backend → creates Chapa payment session & returns checkout URL
-User completes payment on Chapa
-Chapa callback/verification → backend confirms, updates Supabase (mark sold + record sale), sends confirmation email
-
-Always test with Chapa test keys first!
-
-🚀 Deployment
-
-Recommended: Vercel (handles both static files + serverless Node.js functions automatically)
-Set environment variables in Vercel dashboard
-Deploy /public as static assets + /api as serverless functions
-
-Alternative options: Render, Railway, Fly.io, or any Node.js-capable host.
-
-🙋 Contributing
-
-Found a bug? → Open an issue with reproduction steps
-Want a new feature? → Discuss in an issue first
-Pull requests welcome after discussion
+GET / — serves the main index.html
+POST /api/chapa/proceedpayment — initialize Chapa payment (expects orderInfo in body)
+POST /api/chapa/verify — verify Chapa payment (tx_ref in body); updates DB and sends email
+POST /api/dbs/fetchProduct — returns product list from Supabase
+POST /api/dbs/sellProduct — update product(s) to sold (internal use)
+See api/ source for more details and request shapes.
 
 
-❤️ Credits
+## 🛍 Art shop & payment notes
 
+The checkout flow uses Chapa; proceedPayment generates a tx_ref, and verify confirms the payment.
+The server uses Supabase to mark products as sold and to insert sold_items records.
+Use test credentials in staging and verify webhooks and email behavior before going to production.
+
+
+## 🔄 Deployment
+
+Static frontend: deploy to Vercel, Netlify, or similar.
+Server/API: deploy to any Node host or Vercel Serverless (ensure env vars are set in the host).
+
+
+## 🙋 Contributing & support
+
+For bugs, create an issue and include reproduction steps.
+For new features, open an issue to discuss before submitting a PR.
+I can add CONTRIBUTING.md and SECURITY.md if you want them.
+
+
+## ❤️ Credits
+
+Developer(s):Firaol Feyisa (@firaflash), Dawit Zelalem (@Davebash
 Artist: Bezawit Nigat
-Developers: Firaol Feyisa 
 
 
-📜 License
-ISC – see package.json.
-For commercial usage of the artwork/portfolio content, please contact the artist directly.
-Happy coding! ✦
+## 📜 License
+## This project is distributed under the ISC license (see package.json). Contact the authors or the artist for commercial usage.
