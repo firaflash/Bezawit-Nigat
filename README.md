@@ -22,7 +22,21 @@ Live site: [https://bezawit-nigat.vercel.app/](https://bezawit-nigat.vercel.app/
 ## 🖼️ Screenshots
 
 ### Homepage Hero Section
-![Beauty of Art - Landing Page](https://euxhwztkmhzyrcwoupne.supabase.co/storage/v1/object/public/public-img//Screenshot%20from%202025-07-17%2013-28-00%20(1).png)
+![Beauty of Art - Landing Page](https://res.cloudinary.com/dvdmhurvt/image/upload/v1767337699/bezawit-nigat.vercel.app__f6wdpp.webp)
+
+
+### Aboutpage Hero Section
+![About Me - Landing Page](https://res.cloudinary.com/dvdmhurvt/image/upload/v1767337686/bezawit-nigat.vercel.app_about.html_tozlyz.webp)
+
+
+### Archtectural works Hero Section
+![Integrated Art & Architectnre - Landing Page](https://res.cloudinary.com/dvdmhurvt/image/upload/v1767337694/bezawit-nigat.vercel.app_arc.html_sukozb.webp)
+
+
+### Art shop Page
+![TimeLess Emotions - Landing Page](https://res.cloudinary.com/dvdmhurvt/image/upload/v1767337694/bezawit-nigat.vercel.app_artShop_index.html_evv3zn.webp)
+
+
 
 > More screenshots available in the live site!
 
